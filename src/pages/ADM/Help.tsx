@@ -10,7 +10,7 @@ export default function Help() {
   const router = useRouter();
   useAdminCheck();
   const handleClick = () => {
-    router.push("/ADM/ADMEditHelp");
+    router.push("/ADM/EditHelp");
   };
   return (
     <>
