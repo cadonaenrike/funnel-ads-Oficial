@@ -89,7 +89,7 @@ export default function LoginComponent() {
         }
       } else {
         setLoading(false);
-        setError("Falha ao receber a resposta do servidor");
+        setError("E-mail ou senha inválidos");
       }
     } catch (error) {
       setLoading(false);
