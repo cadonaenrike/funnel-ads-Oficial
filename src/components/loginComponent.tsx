@@ -6,6 +6,8 @@ import * as yup from "yup";
 import Link from "next/link";
 import { LoginService } from "@/services/LoginService";
 import { getAdm } from "@/services/GetUser";
+import { MdError } from "react-icons/md";
+import ErrorAlert from "./errorAlert";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -21,7 +23,9 @@ export default function LoginComponent() {
   const [emailValid, setEmailValid] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleEmail = async (e: any) => {
     setEmail(e.target.value);
@@ -42,17 +46,19 @@ export default function LoginComponent() {
 
   const logar = async () => {
     if (email === "") {
-      confirm("Favor digite um email válido");
+      setError("Favor digite um email válido");
       return;
     } else if (senha === "") {
-      confirm("Favor digite uma senha válida");
+      setError("Favor digite uma senha válida");
       return;
     }
 
     try {
+      setLoading(true);
       const response = await LoginService.login({ email, senha });
 
       if (response) {
+        setLoading(false);
         if (response.status === 200) {
           // Supondo que o ID do usuário esteja disponível na resposta do login
           const userId = response.data.user.id;
@@ -73,18 +79,22 @@ export default function LoginComponent() {
               router.push("/CLIENTE/DashboardClient");
             }
           } catch (error) {
-            console.error(`Erro ao verificar status de administrador:`, error);
-            // Em caso de erro na verificação, considera que não é adm por segurança
+            setError(`Erro ao verificar status de administrador: ${error}`);
+            setLoading(false);
             sessionStorage.setItem("isAdm", "false");
           }
         } else {
-          alert("E-mail ou senha inválidos");
+          setLoading(false);
+          setError("E-mail ou senha inválidos");
         }
       } else {
-        console.error("Falha ao receber a resposta do servidor");
+        setLoading(false);
+        setError("Falha ao receber a resposta do servidor");
       }
     } catch (error) {
+      setLoading(false);
       console.error("Erro ao tentar logar", error);
+      setError("Falha ao receber a resposta do servidor");
     }
   };
 
@@ -128,12 +138,14 @@ export default function LoginComponent() {
         <p className="text-red-500 text-sm">{emailError}</p>
       )}
       <Button
+        loading={loading}
         image="/icons/icon-login-button.svg"
         onClickFunction={logar}
         className="mt-4"
       >
         Login
       </Button>
+      {error && <ErrorAlert text={error} />}
       <Link
         className=" text-base font-medium m-0 mt-5 text-black hover:text-sky-500"
         href={"/RecoverPassword"}
