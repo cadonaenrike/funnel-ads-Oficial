@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { getAdm } from "@/services/GetUser"; // Ajuste o caminho de importação conforme necessário
+import { getAdm } from "@/services/GetUser";
 
 const useAdminCheck = () => {
   const router = useRouter();
@@ -8,19 +8,25 @@ const useAdminCheck = () => {
   useEffect(() => {
     const checkAdminStatus = async () => {
       const idUser = sessionStorage.getItem("idUser");
-      console.log(idUser);
+      console.log("ID do Usuário:", idUser);
 
       if (!idUser) {
+        console.log(
+          "Nenhum ID de usuário encontrado, redirecionando para o login..."
+        );
         router.push("/Login"); // Redireciona para o login se não houver idUser
         return;
       }
 
       try {
-        const response = await getAdm(Number(idUser));
-        console.log(response);
-        if (!response) {
-          console.log("oi mula");
-          router.push("/login"); // Redireciona para a dashboard do cliente se não for admin
+        const isAdmin = await getAdm(Number(idUser));
+        console.log("Resposta do getAdm:", isAdmin);
+
+        if (isAdmin?.isadmin === false) {
+          console.log(
+            "Usuário não é admin ou ocorreu um erro, redirecionando..."
+          );
+          router.push("/Login");
         }
         // Se for admin, o hook não faz nada, permitindo que o usuário permaneça na página
       } catch (error) {
