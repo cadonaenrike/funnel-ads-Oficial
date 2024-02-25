@@ -1,13 +1,28 @@
-import React, { ChangeEvent, FormEvent, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Image from "next/image";
 import { FaRegFloppyDisk, FaUser, FaXmark } from "react-icons/fa6";
+import { v4 as uuidv4 } from "uuid";
+import { SubUser } from "@/types/SubUsersTypes"; // Ajuste o caminho de importação conforme necessário
 import { Poppins } from "next/font/google";
+import { useRouter } from "next/router";
+import {
+  createSubUser,
+  getSubUserById,
+  updateSubUser,
+} from "@/services/SubUsersService";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: "400",
 });
+
 export default function CustomerRelationship() {
-  const [foto, setFoto] = useState<File | null>();
+  const [foto, setFoto] = useState<File | string | null>(null);
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [cpf, setCpf] = useState("");
@@ -15,24 +30,77 @@ export default function CustomerRelationship() {
   const [cargo, setCargo] = useState("");
   const [nivelAcesso, setNivelAcesso] = useState("");
   const [email, setEmail] = useState("");
+  const [editUserId, setEditUserId] = useState<string | null>(null);
+  const [editUserDetails, setEditUserDetails] = useState<SubUser | null>(null); // Estado para armazenar os detalhes do usuário em modo de edição
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
-  const handleImageClick = () => {
-    if (inputRef.current) {
-      inputRef.current.click();
+  useEffect(() => {
+    const { subUserId } = router.query;
+    if (subUserId && typeof subUserId === "string") {
+      setEditUserId(subUserId);
+      // Obter os detalhes do usuário em modo de edição e preencher os campos do formulário
+      const fetchUserDetails = async () => {
+        const userDetails = await getSubUserById(subUserId); // Implemente getSubUserById utilizando o serviço apropriado
+        if (userDetails) {
+          setEditUserDetails(userDetails);
+          setNome(userDetails.nome);
+          setSobrenome(userDetails.sobrenome);
+          setCpf(userDetails.cpf);
+          setCelular(userDetails.celular);
+          setCargo(userDetails.cargo);
+          setNivelAcesso(userDetails.nivelAcesso);
+          setEmail(userDetails.email);
+          setFoto(userDetails.foto || null);
+        }
+      };
+      fetchUserDetails();
+    } else {
+      setEditUserId(null);
+      setEditUserDetails(null);
     }
-  };
+  }, [router.query, router.query.subUserId]);
 
-  const handleCadastro = (e: FormEvent) => {
+  const handleCadastro = async (e: FormEvent) => {
     e.preventDefault();
-    setFoto(null);
-    setNome("");
-    setSobrenome("");
-    setCpf("");
-    setCelular("");
-    setCargo("");
-    setNivelAcesso("");
-    setEmail("");
+    const subUser: SubUser = {
+      id: editUserId || uuidv4(),
+      nome,
+      sobrenome,
+      cpf,
+      celular,
+      cargo,
+      nivelAcesso,
+      email,
+      foto:
+        typeof foto === "string"
+          ? foto
+          : foto
+          ? URL.createObjectURL(foto)
+          : undefined,
+    };
+    const success = editUserId
+      ? await updateSubUser(editUserId, subUser)
+      : await createSubUser(subUser);
+
+    if (success) {
+      alert(
+        editUserId
+          ? "SubUser atualizado com sucesso!"
+          : "SubUser criado com sucesso!"
+      );
+      // Limpa o formulário aqui se a operação foi bem-sucedida
+      setFoto(null);
+      setNome("");
+      setSobrenome("");
+      setCpf("");
+      setCelular("");
+      setCargo("");
+      setNivelAcesso("");
+      setEmail("");
+    } else {
+      alert("Falha ao criar ou atualizar SubUser.");
+    }
   };
 
   const handleCancelar = () => {
@@ -44,26 +112,46 @@ export default function CustomerRelationship() {
     setCargo("");
     setNivelAcesso("");
     setEmail("");
+    router.push("/ADM/ADMUserList");
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+    const file = e.target.files?.[0];
+    if (file) {
+      setFoto(file);
+    } else {
+      setFoto(null);
+    }
+  };
 
-    if (files && files.length > 0) {
-      const arquivoSelecionado = files[0];
-      setFoto(arquivoSelecionado);
+  const handleImageClick = () => {
+    inputRef.current?.click();
+  };
+
+  const getImageSrc = () => {
+    if (typeof foto === "string") {
+      return foto;
+    } else if (foto instanceof File) {
+      return URL.createObjectURL(foto);
+    } else {
+      return "/images/exampleImagFile.png";
     }
   };
 
   return (
-    <section className={`${poppins.className}`}>
+    <section
+      className={`${poppins.className} flex-row max-w-screen-xl m-auto `}
+    >
       <section className="flex max-w-screen-xl mx-auto text-sky-950 text-4xl mt-10 mb-5">
         <FaUser />
         <h1 className="ml-2 font-semibold">Usuários</h1>
       </section>
       <section className="bg-white max-w-screen-xl mt-5 mx-auto flex flex-col font-medium p-5">
         <div style={{ marginTop: "15px" }}>
-          <form onSubmit={handleCadastro}>
+          <form
+            onSubmit={handleCadastro}
+            className="max-w-screen-xl mx-auto flex flex-col"
+          >
             {/* div foto upload */}
             <div style={{ paddingBottom: "15px" }}>
               <label
@@ -80,11 +168,7 @@ export default function CustomerRelationship() {
               </label>
               <Image
                 className="border-2 rounded-md border-dashed"
-                src={
-                  foto
-                    ? URL.createObjectURL(foto)
-                    : "/images/exampleImagFile.png"
-                }
+                src={getImageSrc()}
                 alt="Foto selecionada"
                 style={{
                   marginTop: "10px",
@@ -96,6 +180,15 @@ export default function CustomerRelationship() {
                 onClick={handleImageClick}
                 width={343}
                 height={150}
+              />
+              <input
+                type="file"
+                id="foto"
+                name="foto"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={inputRef}
+                onChange={handleFileChange}
               />
               <input
                 type="file"
@@ -257,7 +350,6 @@ export default function CustomerRelationship() {
                 <FaXmark />
                 Cancelar
               </button>
-
               <button
                 className="hover:bg-slate-600 font-semibold text-white"
                 style={{
@@ -272,8 +364,17 @@ export default function CustomerRelationship() {
                 }}
                 type="submit"
               >
-                <FaRegFloppyDisk className="mr-5" />
-                Salvar
+                {editUserId ? (
+                  <>
+                    <FaRegFloppyDisk className="mr-5" />
+                    Atualizar
+                  </>
+                ) : (
+                  <>
+                    <FaRegFloppyDisk className="mr-5" />
+                    Salvar
+                  </>
+                )}
               </button>
             </div>
           </form>

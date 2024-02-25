@@ -3,11 +3,24 @@
 import { SubUser } from "@/types/SubUsersTypes";
 import api from "./Api";
 
-// Criar um novo SubUser
+// // Criar um novo SubUser
+// ele vai mandar esse obj
+// {
+//   "id": "116cc25a-86ea-4c54-987c-2bf1dd7ad2cd",
+//   "nome": "sss",
+//   "sobrenome": "sss",
+//   "cpf": "ssss",
+//   "celular": "ssss",
+//   "cargo": "desenvolvedor",
+//   "nivelAcesso": "1",
+//   "email": "sssss@ssss",
+//   "foto": "blob:http://localhost:3000/9d21e022-fb1a-4090-9da0-eaed75842e9c"
+// }
 export const createSubUser = async (subUser: SubUser): Promise<boolean> => {
-  const userId = sessionStorage.getItem("userId");
+  const userId = sessionStorage.getItem("idUser");
   try {
     const formData = new FormData();
+    formData.append("id", subUser.id);
     formData.append("nome", subUser.nome);
     formData.append("sobrenome", subUser.sobrenome);
     formData.append("cpf", subUser.cpf);
@@ -33,11 +46,9 @@ export const createSubUser = async (subUser: SubUser): Promise<boolean> => {
   }
 };
 
-// As demais funções permanecem inalteradas...
-
 // Obter todos os subUsers de um usuário
 export const getSubUsers = async (): Promise<SubUser[] | null> => {
-  const userId = sessionStorage.getItem("userId");
+  const userId = sessionStorage.getItem("idUser");
   try {
     const response = await api.get(`/usuarios/${userId}/subUsers`);
     if (response.status === 200) {
@@ -50,12 +61,29 @@ export const getSubUsers = async (): Promise<SubUser[] | null> => {
   }
 };
 
+// Obter um subUser por ID
+export const getSubUserById = async (
+  subUserId: string
+): Promise<SubUser | null> => {
+  const userId = sessionStorage.getItem("idUser");
+  try {
+    const response = await api.get(`/usuarios/${userId}/subUsers/${subUserId}`);
+    if (response.status === 200) {
+      return response.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Erro ao obter subUser por ID", error);
+    return null;
+  }
+};
+
 // Atualizar um subUser
 export const updateSubUser = async (
-  subUserId: number,
+  subUserId: string,
   subUser: SubUser
 ): Promise<boolean> => {
-  const userId = sessionStorage.getItem("userId");
+  const userId = sessionStorage.getItem("idUser");
   try {
     const response = await api.put(
       `/usuarios/${userId}/subUsers/${subUserId}`,
@@ -69,8 +97,8 @@ export const updateSubUser = async (
 };
 
 // Deletar um subUser
-export const deleteSubUser = async (subUserId: number): Promise<boolean> => {
-  const userId = sessionStorage.getItem("userId");
+export const deleteSubUser = async (subUserId: string): Promise<boolean> => {
+  const userId = sessionStorage.getItem("idUser");
   try {
     const response = await api.delete(
       `/usuarios/${userId}/subUsers/${subUserId}`

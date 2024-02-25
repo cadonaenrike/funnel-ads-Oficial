@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import NavBar from "@/components/navBar";
-import useAdminCheck from "@/services/AdmService";
-
 import {
   FaCamera,
   FaCirclePlus,
   FaCircleUser,
-  FaLock,
   FaRegPenToSquare,
+  FaTrash,
   FaUserGraduate,
 } from "react-icons/fa6";
 import { SubUser } from "@/types/SubUsersTypes";
-import { getSubUsers } from "@/services/SubUsersService";
+import { deleteSubUser, getSubUsers } from "@/services/SubUsersService";
 
 ///exemplo de como vai vir do back
 // useEffect(() => {
@@ -60,7 +58,28 @@ export default function ADMUserList() {
   }, []);
 
   const handleClick = () => {
-    router.push("ADM/CadNewUser");
+    router.push("/ADM/CadNewUser");
+  };
+  const handleEdit = (subUserId: string) => {
+    // Redireciona para a página de edição com o ID do subUser
+    router.push(`/ADM/CadNewUser?subUserId=${subUserId}`);
+  };
+  const handleDelete = async (subUserId: string) => {
+    const confirmDelete = window.confirm(
+      "Tem certeza de que deseja excluir este usuário?"
+    );
+    if (confirmDelete) {
+      const success = await deleteSubUser(subUserId);
+      if (success) {
+        // Atualizar a lista de usuários após a exclusão bem-sucedida
+        const updatedUsuarios = usuarios.filter(
+          (usuario) => usuario.id !== subUserId
+        );
+        setUsuarios(updatedUsuarios);
+      } else {
+        alert("Falha ao excluir o usuário.");
+      }
+    }
   };
   return (
     <>
@@ -126,8 +145,14 @@ export default function ADMUserList() {
                   <td className="px-6 py-4">{usuario.cargo}</td>
                   <td className="px-6 py-4">
                     <div style={{ display: "flex" }}>
-                      <FaRegPenToSquare className="text-lg text-sky-900 cursor-pointer mr-2" />
-                      <FaLock className="text-lg text-sky-900 cursor-pointer" />
+                      <FaRegPenToSquare
+                        className="text-lg text-sky-900 cursor-pointer mr-2"
+                        onClick={() => handleEdit(usuario.id)}
+                      />
+                      <FaTrash
+                        className="text-lg text-sky-900 cursor-pointer"
+                        onClick={() => handleDelete(usuario.id)}
+                      />
                     </div>
                   </td>
                 </tr>

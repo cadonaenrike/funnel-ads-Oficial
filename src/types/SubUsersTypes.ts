@@ -1,5 +1,5 @@
 export interface SubUser {
-  id?: number; // Opcional para novos subUsers
+  id: string; // Opcional para novos subUsers
   nome: string;
   sobrenome: string;
   cpf: string;
