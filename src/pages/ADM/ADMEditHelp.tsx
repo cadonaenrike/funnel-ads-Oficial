@@ -1,6 +1,7 @@
 import EditorTexto from "@/components/editorTexto";
 import Modal from "@/components/modal";
 import NavBar from "@/components/navBar";
+import useAdminCheck from "@/services/AdmService";
 import { useState } from "react";
 import {
   FaArrowsRotate,
@@ -19,6 +20,7 @@ export default function ADMEditHelp() {
   const handleCLoseModal = () => {
     setModal(false);
   };
+  useAdminCheck();
   return (
     <>
       <NavBar />

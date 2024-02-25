@@ -1,13 +1,14 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import NavBar from "@/components/navBar";
+import useAdminCheck from "@/services/AdmService";
 import { useRouter } from "next/router";
 import { FaCirclePlus } from "react-icons/fa6";
 import { IoMdHelpBuoy } from "react-icons/io";
 
 export default function Help() {
   const router = useRouter();
-
+  useAdminCheck();
   const handleClick = () => {
     router.push("/ADMEditHelp");
   };

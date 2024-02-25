@@ -1,4 +1,5 @@
 import NavBar from "@/components/navBar";
+import useAdminCheck from "@/services/AdmService";
 import {
   FaChartSimple,
   FaEye,
@@ -10,6 +11,7 @@ import {
 } from "react-icons/fa6";
 
 export default function RelatoClient() {
+  useAdminCheck();
   return (
     <>
       <NavBar />

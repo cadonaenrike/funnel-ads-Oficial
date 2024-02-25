@@ -24,17 +24,10 @@ export const fetchUserData = async (
 
 // Adicionando o método getAdm
 export const getAdm = async (id: number): Promise<UserTypes | null> => {
-  try {
-    const response = await api.get<UserTypes>(`/getAdmin/${id}`);
-    if (response.status === 200) {
-      return response.data; // Retorna os dados do administrador
-    }
-    return null;
-  } catch (error) {
-    console.error(
-      `Erro ao tentar buscar dados do administrador com ID ${id}`,
-      error
-    );
-    return null;
+  const response = await api.get<UserTypes>(`/usuarios/isAdmin/${id}`);
+  console.log(response);
+  if (response.data.isadmin === true) {
+    return response.data; // Retorna os dados do administrador
   }
+  return null;
 };

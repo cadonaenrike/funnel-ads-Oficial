@@ -1,9 +1,11 @@
 import CardsClient from "@/components/cardsClients";
 import CardsInfCons from "@/components/cardsInfoConsumo";
 import NavBar from "@/components/navBar";
+import useAdminCheck from "@/services/AdmService";
 import { FaUsers, FaUser } from "react-icons/fa6";
 
 export default function ClientDetail() {
+  useAdminCheck();
   return (
     <>
       <NavBar />

@@ -4,8 +4,10 @@ import { FaRegFileAlt } from "react-icons/fa";
 import { CiCreditCard1 } from "react-icons/ci";
 import { IoEyeSharp } from "react-icons/io5";
 import { FaturasData, Invoice, statusColors } from "@/types/InvoiceTypes";
+import useAdminCheck from "@/services/AdmService";
 
 export default function ADMRelatoFaturamento() {
+  useAdminCheck();
   const cpf = "03653708001";
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [userId, setUserId] = useState<string>("");

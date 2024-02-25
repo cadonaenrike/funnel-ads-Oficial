@@ -1,8 +1,10 @@
 import EditorTexto from "@/components/editorTexto";
 import NavBar from "@/components/navBar";
+import useAdminCheck from "@/services/AdmService";
 import { FaRegFloppyDisk, FaRegStar, FaXmark } from "react-icons/fa6";
 
 export default function EditarPlano() {
+  useAdminCheck();
   return (
     <>
       <NavBar />

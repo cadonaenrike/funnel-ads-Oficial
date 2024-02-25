@@ -42,7 +42,7 @@ export default function NavBar() {
       if (isAdm === "true" && idUser) {
         try {
           const response = await getAdm(Number(idUser));
-          if (response && response.status === 200) {
+          if (response && response.isadmin === true) {
             setIsAdmin(true);
           } else {
             setIsAdmin(false);
@@ -88,7 +88,7 @@ export default function NavBar() {
             />
 
             <Link
-              href="/Dashboard"
+              href="Dashboard"
               className="inline-flex items-center gap-x-1.5 text-white font-medium text-sm px-3 py-2 hover:text-cyan-600"
             >
               {" "}
@@ -132,7 +132,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/ADMRelatoConsuClie"
+                          href="ADMRelatoConsuClie"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -148,7 +148,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/CadNewPlan"
+                          href="CadNewPlan"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -164,7 +164,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/ADMRelatofaturamento"
+                          href="ADMRelatofaturamento"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -180,7 +180,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/ADMUserList"
+                          href="ADMUserList"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -219,7 +219,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/CadNewUser"
+                          href="CadNewUser"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -235,7 +235,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/CadNewPlan"
+                          href="CadNewPlan"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -251,7 +251,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/Help"
+                          href="Help"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -297,7 +297,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/MyProfile"
+                          href="MyProfile"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -350,7 +350,7 @@ export default function NavBar() {
             />
 
             <Link
-              href="/DashboardClient"
+              href="/CLIENTE/DashboardClient"
               className="inline-flex items-center gap-x-1.5 text-white font-medium text-sm px-3 py-2 hover:text-cyan-600"
             >
               <FaDesktop className=" h-5 w-5 mr-3" /> Dashboard
@@ -465,7 +465,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/RelacaoDeLeads-Client"
+                          href="/CLIENTE/RelacaoDeLeads-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -504,7 +504,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/RelacaoDeLeads-Client"
+                          href="/CLIENTE/RelacaoDeLeads-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -520,7 +520,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/RelacaoDeTags-Client"
+                          href="/CLIENTE/RelacaoDeTags-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -536,7 +536,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/RelacaoDePasta-Client"
+                          href="/CLIENTE/RelacaoDePasta-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -552,7 +552,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/Campanha-Client"
+                          href="/CLIENTE/Campanha-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -568,7 +568,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/Usuario-Client"
+                          href="/CLIENTE/Usuario-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -618,7 +618,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/MyData"
+                          href="/CLIENTE/MyData"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -634,7 +634,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/MyData"
+                          href="/CLIENTE/MyData"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -650,7 +650,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/Faturas"
+                          href="/CLIENTE/Faturas"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -666,7 +666,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/Configuracao-Client"
+                          href="/CLIENTE/Configuracao-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"

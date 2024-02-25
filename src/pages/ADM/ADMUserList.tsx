@@ -1,4 +1,5 @@
 import NavBar from "@/components/navBar";
+import useAdminCheck from "@/services/AdmService";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
@@ -21,7 +22,7 @@ interface Usuario {
 export default function ADMUserList() {
   const router = useRouter();
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-
+  useAdminCheck();
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
