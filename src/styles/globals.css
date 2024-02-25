@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap");
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 244, 244, 244;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+#myQuillEditor .ql-font .ql-picker-label::before {
+  content: "Fonte";
+}
+
+#myQuillEditor .ql-font .ql-picker-item[data-value="Arial"]::before {
+  font-family: "Arial", sans-serif;
+}
+
+#myQuillEditor .ql-font .ql-picker-item[data-value="Times New Roman"]::before {
+  font-family: "Times New Roman", serif;
+}
+
+#myQuillEditor .ql-font .ql-picker-item[data-value="Courier New"]::before {
+  font-family: "Courier New", monospace;
+}
+
+#myQuillEditor .ql-font .ql-picker-item[data-value="Verdana"]::before {
+  font-family: "Verdana", sans-serif;
+}
+
+#myQuillEditor .ql-font .ql-picker-item[data-value="Roboto"]::before {
+  font-family: "Roboto", sans-serif;
+}
