@@ -13,4 +13,5 @@ export interface LoginResponse {
       email: string;
     };
   };
+  error?: string
 }

@@ -10,7 +10,7 @@ export default function Help() {
   const router = useRouter();
   useAdminCheck();
   const handleClick = () => {
-    router.push("/ADMEditHelp");
+    router.push("/ADM/ADMEditHelp");
   };
   return (
     <>
@@ -66,7 +66,21 @@ export default function Help() {
                 <td className="px-5 py-2">Como criar Funil123</td>
                 <td className="px-5 py-2">Aqui vai texto de ajuda</td>
                 <td className="flex items-center px-5 py-2">
-                  <button type="button" className="text-white m-5">
+                  <button
+                    onClick={() =>
+                      router.push(
+                        `/ADM/ADMEditHelp?id=${673213}&topico=${encodeURIComponent(
+                          "eu sou o topico"
+                        )}&categorias=${[12, 23].join(
+                          ","
+                        )}&descricao=${encodeURIComponent(
+                          "asiduhasijdghajshdgjashdgsajashgdgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+                        )}`
+                      )
+                    }
+                    type="button"
+                    className="text-white m-5"
+                  >
                     <img src="/icons/icon-edit-button.svg" />
                   </button>
                   <button type="button" className="text-white">

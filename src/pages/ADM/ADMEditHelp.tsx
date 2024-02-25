@@ -1,8 +1,8 @@
 import EditorTexto from "@/components/editorTexto";
-import Modal from "@/components/modal";
+import AddCategoriaModal from "@/components/AddCategoriaModal";
 import NavBar from "@/components/navBar";
 import useAdminCheck from "@/services/AdmService";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaArrowsRotate,
   FaCirclePlus,
@@ -10,9 +10,72 @@ import {
   FaXmark,
 } from "react-icons/fa6";
 import { IoMdHelpBuoy } from "react-icons/io";
+import { MdCancel } from "react-icons/md";
+import { useRouter } from "next/router";
+import { addHelp, updateHelp } from "@/services/HelpService";
 
 export default function ADMEditHelp() {
+  const router = useRouter();
+  const id = router.query.id as string;
+
+  interface HelpForm {
+    categorias: string[];
+    topico: string;
+    descrição: string;
+  }
+
   const [openModal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [requiredTopico, setRequiredTopico] = useState(false);
+  const [form, setForm] = useState<HelpForm>({
+    categorias: router.query.categorias
+      ? (router.query.categorias as string).split(",")
+      : [],
+    topico: (router.query.topico as string) || "",
+    descrição: (router.query.descricao as string) || "",
+  });
+
+  useEffect(() => {
+    if (router.isReady) {
+      setForm({
+        categorias: router.query.categorias
+          ? (router.query.categorias as string).split(",")
+          : [],
+        topico: (router.query.topico as string) || "",
+        descrição: (router.query.descricao as string) || "",
+      });
+    }
+  }, [router.isReady, router.query]);
+
+  const addCategoria = (name: string) => {
+    setForm({
+      ...form,
+      categorias: [...form.categorias, name],
+    });
+  };
+
+  const removeCategoria = (name: string) => {
+    const remove = form.categorias.filter((c) => c !== name);
+    setForm({
+      ...form,
+      categorias: remove,
+    });
+  };
+
+  const handleAddHelp = async () => {
+    if (!form.topico) {
+      setRequiredTopico(true);
+      return;
+    }
+
+    setLoading(true);
+
+    !router.query.id
+      ? await addHelp(form)
+      : await updateHelp(id, form.categorias, form.topico, form.descrição);
+
+    router.push("/ADM/Help");
+  };
 
   const handleOpenModal = () => {
     setModal(true);
@@ -20,11 +83,30 @@ export default function ADMEditHelp() {
   const handleCLoseModal = () => {
     setModal(false);
   };
+
+  const CategoriaItem = ({ name }: { name: string }) => {
+    return (
+      <div className="flex items-center gap-1 border rounded-lg px-2 bg-white border-slate-800">
+        <span
+          onClick={() => removeCategoria(name)}
+          className="text-slate-800 cursor-pointer"
+        >
+          <MdCancel />{" "}
+        </span>{" "}
+        {name}
+      </div>
+    );
+  };
+
   useAdminCheck();
   return (
     <>
       <NavBar />
-      <Modal isOpen={openModal} isClose={handleCLoseModal} />
+      <AddCategoriaModal
+        onOk={addCategoria}
+        isOpen={openModal}
+        isClose={handleCLoseModal}
+      />
 
       <section className="flex max-w-screen-xl mx-auto text-sky-950 text-4xl mt-10 mb-5">
         <IoMdHelpBuoy />
@@ -40,39 +122,47 @@ export default function ADMEditHelp() {
             <label htmlFor="nomePlano" className="text-gray-500">
               Categoria:
             </label>
-            <input
-              type="text"
-              name="nomePlano"
-              placeholder="Ex: Funil"
-              className="rounded-lg h-12 bg-gray-100 focus:bg-gray-200 focus:outline-none py-2 px-2"
-            />
+            <div className="rounded-lg h-12 bg-gray-100 focus:bg-gray-200 focus:outline-none py-2 px-2 flex gap-2">
+              {form.categorias.map((c) => (
+                <CategoriaItem key={c} name={c} />
+              ))}
+            </div>
           </section>
           <button
             onClick={handleOpenModal}
             className="bg-amber-500 h-12 mt-8 hover:bg-amber-500 px-3 rounded-xl text-white font-semibold flex flex-row gap-2 items-center"
           >
             <FaCirclePlus />
-            Categoria
+            Categoria:
           </button>
           <section className="flex w-full flex-col gap-2">
             <label htmlFor="valor" className="text-gray-500">
-              Topico
+              Tópico:
             </label>
             <input
+              value={form.topico}
+              onChange={(e) => setForm({ ...form, topico: e.target.value })}
               type="text"
               name="valor"
               placeholder="Ex: Criando Funil"
-              className="rounded-lg h-12 bg-gray-100 focus:bg-gray-200 focus:outline-none py-2 px-2"
+              className={`rounded-lg h-12 bg-gray-100 focus:bg-gray-200 focus:outline-none py-2 px-2 ${
+                requiredTopico ? "border-2 border-red-500" : ""
+              }`}
             />
           </section>
         </section>
 
         <section className="mt-3 flex flex-col gap-3 pb-10">
-          <h2 className="text-gray-500 font-bold">Descrição do plano</h2>
-          <EditorTexto placeholder={"Typings"} />
+          <h2 className="text-gray-500 font-bold">Descrição:</h2>
+          <EditorTexto
+            value={form.descrição}
+            setValue={(v) => setForm({ ...form, descrição: v })}
+            placeholder={"Typings"}
+          />
         </section>
         <div className="flex justify-end mt-4">
           <button
+            onClick={() => router.push("/ADM/Help")}
             className="font-medium gap-5"
             style={{
               backgroundColor: "#f5f5f5",
@@ -91,9 +181,9 @@ export default function ADMEditHelp() {
           </button>
 
           <button
-            className="hover:bg-sky-700 font-semibold text-white"
+            className="hover:bg-cyan-600 font-semibold text-white bg-cyan-950"
+            onClick={handleAddHelp}
             style={{
-              backgroundColor: "#064b72",
               marginLeft: "15px",
               height: "44px",
               width: "160px",
@@ -104,11 +194,24 @@ export default function ADMEditHelp() {
             }}
             type="submit"
           >
-            <FaRegFloppyDisk className="mr-5" />
-            Salvar
+            {loading ? (
+              <span className="loader" />
+            ) : (
+              <>
+                {router.query.id ? (
+                  <>
+                    <FaArrowsRotate className="mr-5" /> Atualizar{" "}
+                  </>
+                ) : (
+                  <>
+                    <FaRegFloppyDisk className="mr-5" /> Salvar{" "}
+                  </>
+                )}
+              </>
+            )}
           </button>
 
-          <button
+          {/* <button
             className="hover:bg-cyan-600 font-semibold text-white bg-cyan-950"
             style={{
               marginLeft: "15px",
@@ -123,7 +226,7 @@ export default function ADMEditHelp() {
           >
             <FaArrowsRotate className="mr-5" />
             Atualizar
-          </button>
+          </button> */}
         </div>
       </section>
     </>
