@@ -1,6 +1,7 @@
 export interface HelpType {
-    id?: string
-    categorias: string[]
-    topico: string
-    descrição: string
+  data?: any;
+  id: string;
+  categorias: string[];
+  topico: string;
+  descrição: string;
 }

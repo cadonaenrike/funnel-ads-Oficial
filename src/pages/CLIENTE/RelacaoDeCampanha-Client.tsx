@@ -67,7 +67,7 @@ export default function AddPaste() {
   };
 
   const editCampanha = () => {
-    router.push("/Campanha-Client");
+    router.push("/CLIENTE/Campanha-Client");
   };
 
   const handleDeleteClick = async (campanhaId: string) => {

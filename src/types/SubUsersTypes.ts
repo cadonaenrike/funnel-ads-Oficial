@@ -1,4 +1,5 @@
 export interface SubUser {
+  idAdmin: string;
   id: string; // Opcional para novos subUsers
   nome: string;
   sobrenome: string;

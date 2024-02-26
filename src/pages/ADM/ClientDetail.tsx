@@ -1,4 +1,4 @@
-import CardsClient from "@/components/cardsClients";
+import CardsClient from "@/components/CardsSubUsers";
 import CardsInfCons from "@/components/cardsInfoConsumo";
 import NavBar from "@/components/navBar";
 import useAdminCheck from "@/services/AdmService";

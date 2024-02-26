@@ -16,13 +16,16 @@ import {
   getSubUserById,
   updateSubUser,
 } from "@/services/SubUsersService";
+import { string } from "yup";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: "400",
 });
 
 export default function CustomerRelationship() {
-  const [foto, setFoto] = useState<File | string | null>(null);
+  const [foto, setFoto] = useState<File | string | null>(
+    "/public/download.png"
+  );
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [cpf, setCpf] = useState("");
@@ -42,16 +45,18 @@ export default function CustomerRelationship() {
       // Obter os detalhes do usuário em modo de edição e preencher os campos do formulário
       const fetchUserDetails = async () => {
         const userDetails = await getSubUserById(subUserId); // Implemente getSubUserById utilizando o serviço apropriado
-        if (userDetails) {
-          setEditUserDetails(userDetails);
-          setNome(userDetails.nome);
-          setSobrenome(userDetails.sobrenome);
-          setCpf(userDetails.cpf);
-          setCelular(userDetails.celular);
-          setCargo(userDetails.cargo);
-          setNivelAcesso(userDetails.nivelAcesso);
-          setEmail(userDetails.email);
-          setFoto(userDetails.foto || null);
+        if (userDetails && userDetails.length > 0) {
+          // Verifica se userDetails não é nulo e tem pelo menos um elemento
+          const userDetail = userDetails[0]; // Acessa o primeiro elemento do array
+          setEditUserDetails(userDetail);
+          setNome(userDetail.nome);
+          setSobrenome(userDetail.sobrenome);
+          setCpf(userDetail.cpf);
+          setCelular(userDetail.celular);
+          setCargo(userDetail.cargo);
+          setNivelAcesso(userDetail.nivelAcesso); // Convertendo para string
+          setEmail(userDetail.email);
+          setFoto(userDetail.foto || "/public/download.png");
         }
       };
       fetchUserDetails();
@@ -64,6 +69,7 @@ export default function CustomerRelationship() {
   const handleCadastro = async (e: FormEvent) => {
     e.preventDefault();
     const subUser: SubUser = {
+      idAdmin: sessionStorage.getItem("idUser") || "",
       id: editUserId || uuidv4(),
       nome,
       sobrenome,

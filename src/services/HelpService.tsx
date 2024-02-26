@@ -33,7 +33,8 @@ export const updateHelp = async (
 
 export const getAllHelps = async (): Promise<HelpType[]> => {
   try {
-    const response = await api.get<HelpType[]>("/getHelps");
+    const response = await api.get<HelpType[]>("/getHelp");
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Erro ao obter helps:", error);

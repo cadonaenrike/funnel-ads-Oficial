@@ -61,7 +61,7 @@ export default function CardsCampanha({
       </section>
       {showLink && (
         <Link
-          href="/RelacaoDePasta-Client"
+          href="/CLIENTE/RelacaoDePasta-Client"
           className="flex items-center w-full justify-end text-sm"
         >
           Ver todos <FaChevronRight className="text-sm" />

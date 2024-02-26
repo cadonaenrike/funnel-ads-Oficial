@@ -65,7 +65,7 @@ export default function LoginComponent() {
 
           try {
             const admResponse = await getAdm(userId);
-            if (admResponse) {
+            if (admResponse?.isadmin === true) {
               // Armazena 'true' como string porque sessionStorage só armazena strings
               sessionStorage.setItem("isAdm", "true");
               sessionStorage.setItem("idUser", `${userId}`);

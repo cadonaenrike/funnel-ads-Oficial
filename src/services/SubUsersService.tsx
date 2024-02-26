@@ -3,23 +3,11 @@
 import { SubUser } from "@/types/SubUsersTypes";
 import api from "./Api";
 
-// // Criar um novo SubUser
-// ele vai mandar esse obj
-// {
-//   "id": "116cc25a-86ea-4c54-987c-2bf1dd7ad2cd",
-//   "nome": "sss",
-//   "sobrenome": "sss",
-//   "cpf": "ssss",
-//   "celular": "ssss",
-//   "cargo": "desenvolvedor",
-//   "nivelAcesso": "1",
-//   "email": "sssss@ssss",
-//   "foto": "blob:http://localhost:3000/9d21e022-fb1a-4090-9da0-eaed75842e9c"
-// }
 export const createSubUser = async (subUser: SubUser): Promise<boolean> => {
-  const userId = sessionStorage.getItem("idUser");
+  const userId = sessionStorage.getItem("idUser") ?? ""; // Definindo uma string vazia como valor padrão se userId for null
   try {
     const formData = new FormData();
+    formData.append("idAdmin", userId);
     formData.append("id", subUser.id);
     formData.append("nome", subUser.nome);
     formData.append("sobrenome", subUser.sobrenome);
@@ -33,11 +21,7 @@ export const createSubUser = async (subUser: SubUser): Promise<boolean> => {
     }
 
     // Substitua '/subUsers' pelo seu endpoint correto
-    const response = await api.post(
-      `/usuarios/${userId}/subUsers`,
-      formData,
-      {}
-    );
+    const response = await api.post(`/postSubUser`, formData, {});
 
     return response.status === 200;
   } catch (error) {
@@ -48,9 +32,11 @@ export const createSubUser = async (subUser: SubUser): Promise<boolean> => {
 
 // Obter todos os subUsers de um usuário
 export const getSubUsers = async (): Promise<SubUser[] | null> => {
-  const userId = sessionStorage.getItem("idUser");
+  const userAdminLogado = sessionStorage.getItem("idUser");
   try {
-    const response = await api.get(`/usuarios/${userId}/subUsers`);
+    const response = await api.get(
+      `/getSubUsersAll/${userAdminLogado}/subUsers`
+    );
     if (response.status === 200) {
       return response.data;
     }
@@ -64,10 +50,10 @@ export const getSubUsers = async (): Promise<SubUser[] | null> => {
 // Obter um subUser por ID
 export const getSubUserById = async (
   subUserId: string
-): Promise<SubUser | null> => {
+): Promise<any | null> => {
   const userId = sessionStorage.getItem("idUser");
   try {
-    const response = await api.get(`/usuarios/${userId}/subUsers/${subUserId}`);
+    const response = await api.get(`/getSubUser/${userId}/${subUserId}`);
     if (response.status === 200) {
       return response.data;
     }
@@ -78,17 +64,36 @@ export const getSubUserById = async (
   }
 };
 
+// Obter os últimos 3 subUsers
+export const getLastThreeClients = async (): Promise<SubUser[]> => {
+  const userAdminLogado = sessionStorage.getItem("idUser");
+  try {
+    const response = await api.get(
+      `/getSubUsersAll/${userAdminLogado}/subUsers`
+    );
+    if (response.status === 200) {
+      const subUsers: SubUser[] = response.data;
+      // Ordenar os subUsers pelo ID de forma decrescente
+      const sortedSubUsers = subUsers.sort((a, b) => {
+        return parseInt(b.id, 10) - parseInt(a.id, 10);
+      });
+      // Pegar os primeiros 3 subUsers
+      return sortedSubUsers.slice(0, 3);
+    }
+    return [];
+  } catch (error) {
+    console.error("Erro ao obter os últimos clientes:", error);
+    return [];
+  }
+};
+
 // Atualizar um subUser
 export const updateSubUser = async (
   subUserId: string,
   subUser: SubUser
 ): Promise<boolean> => {
-  const userId = sessionStorage.getItem("idUser");
   try {
-    const response = await api.put(
-      `/usuarios/${userId}/subUsers/${subUserId}`,
-      subUser
-    );
+    const response = await api.put(`/putSubUser/${subUserId}`, subUser);
     return response.status === 200; // Ou outro código de sucesso esperado
   } catch (error) {
     console.error("Erro ao atualizar subUser", error);
@@ -98,12 +103,9 @@ export const updateSubUser = async (
 
 // Deletar um subUser
 export const deleteSubUser = async (subUserId: string): Promise<boolean> => {
-  const userId = sessionStorage.getItem("idUser");
   try {
-    const response = await api.delete(
-      `/usuarios/${userId}/subUsers/${subUserId}`
-    );
-    return response.status === 200; // Ou outro código de sucesso esperado
+    const response = await api.delete(`/deleteSubUser/${subUserId}`);
+    return response.status === 204; // Ou outro código de sucesso esperado
   } catch (error) {
     console.error("Erro ao deletar subUser", error);
     return false;

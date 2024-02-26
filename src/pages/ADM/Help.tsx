@@ -1,17 +1,44 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
 import NavBar from "@/components/navBar";
-import useAdminCheck from "@/services/AdmService";
 import { useRouter } from "next/router";
 import { FaCirclePlus } from "react-icons/fa6";
 import { IoMdHelpBuoy } from "react-icons/io";
+import { useEffect, useState } from "react";
+import { getAllHelps, deleteHelp } from "@/services/HelpService";
+import { HelpType } from "@/types/HelpType";
 
 export default function Help() {
   const router = useRouter();
-  useAdminCheck();
+  const [helps, setHelps] = useState<HelpType[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const helpData = await getAllHelps();
+        console.log(helpData);
+        setHelps(helpData.map((item) => item.data)); // Ajuste para armazenar apenas os dados
+      } catch (error) {
+        console.error("Erro ao obter dados de ajuda:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
   const handleClick = () => {
     router.push("/ADM/ADMEditHelp");
   };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteHelp(id);
+      // Atualize os dados após a exclusão
+      const updatedHelps = helps.filter((help) => help.id !== id);
+      setHelps(updatedHelps);
+      console.log("Ajuda excluída com sucesso");
+    } catch (error) {
+      console.error("Erro ao excluir ajuda:", error);
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -54,104 +81,48 @@ export default function Help() {
               </tr>
             </thead>
             <tbody>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              {helps.map((help, index) => (
+                <tr
+                  key={index}
+                  className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                 >
-                  673213
-                </th>
-
-                <td className="px-5 py-2">Funil</td>
-                <td className="px-5 py-2">Como criar Funil123</td>
-                <td className="px-5 py-2">Aqui vai texto de ajuda</td>
-                <td className="flex items-center px-5 py-2">
-                  <button
-                    onClick={() =>
-                      router.push(
-                        `/ADM/ADMEditHelp?id=${673213}&topico=${encodeURIComponent(
-                          "eu sou o topico"
-                        )}&categorias=${[12, 23].join(
-                          ","
-                        )}&descricao=${encodeURIComponent(
-                          "asiduhasijdghajshdgjashdgsajashgdgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
-                        )}`
-                      )
-                    }
-                    type="button"
-                    className="text-white m-5"
+                  <th
+                    scope="row"
+                    className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    <img src="/icons/icon-edit-button.svg" />
-                  </button>
-                  <button type="button" className="text-white">
-                    <img src="/icons/icon-delete-button.svg" />
-                  </button>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  021987
-                </th>
-
-                <td className="px-5 py-2">Funil</td>
-                <td className="px-5 py-2">Como criar Funil</td>
-                <td className="px-5 py-2">Aqui vai texto de ajuda</td>
-                <td className="flex items-center px-5 py-2">
-                  <button type="button" className="text-white m-5">
-                    <img src="/icons/icon-edit-button.svg" />
-                  </button>
-                  <button type="button" className="text-white">
-                    <img src="/icons/icon-delete-button.svg" />
-                  </button>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  695647
-                </th>
-
-                <td className="px-5 py-2">Gatilhos</td>
-                <td className="px-5 py-2">Como criar Gatilho com TIMER</td>
-                <td className="px-5 py-2">Aqui va ajuda </td>
-                <td className="flex items-center px-5 py-2">
-                  <button type="button" className="text-white m-5">
-                    <img src="/icons/icon-edit-button.svg" />
-                  </button>
-                  <button type="button" className="text-white">
-                    <img src="/icons/icon-delete-button.svg" />
-                  </button>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  472007
-                </th>
-
-                <td className="px-5 py-2">Funções, Gatilhos</td>
-                <td className="px-5 py-2">
-                  Como criar Função com Disparo de SMS
-                </td>
-                <td className="px-5 py-2">
-                  Aqui vai a ajuda do disparo de SMS
-                </td>
-                <td className="flex items-center px-5 py-2">
-                  <button type="button" className="text-white m-5">
-                    <img src="/icons/icon-edit-button.svg" />
-                  </button>
-                  <button type="button" className="text-white">
-                    <img src="/icons/icon-delete-button.svg" />
-                  </button>
-                </td>
-              </tr>
+                    {help.id} {/* Renderize o ID diretamente */}
+                  </th>
+                  <td className="px-5 py-2">{help.categorias.join(", ")}</td>
+                  <td className="px-5 py-2">{help.topico}</td>
+                  <td className="px-5 py-2">{help.descrição}</td>
+                  <td className="flex items-center px-5 py-2">
+                    <button
+                      onClick={() =>
+                        router.push(
+                          `/ADM/ADMEditHelp?id=${
+                            help.id
+                          }&topico=${encodeURIComponent(
+                            help.topico
+                          )}&categorias=${help.categorias.join(
+                            ","
+                          )}&descricao=${encodeURIComponent(help.descrição)}`
+                        )
+                      }
+                      type="button"
+                      className="text-white m-5"
+                    >
+                      <img src="/icons/icon-edit-button.svg" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(help.id)}
+                      type="button"
+                      className="text-white"
+                    >
+                      <img src="/icons/icon-delete-button.svg" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

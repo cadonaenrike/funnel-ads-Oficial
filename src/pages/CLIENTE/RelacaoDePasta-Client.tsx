@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa6";
 import NavBar from "@/components/navBar";
 import { addPasta, getAllPastas, deletePasta } from "@/services/PastaService";
+import { getCampanhasById } from "@/services/CampanhaService"; // Importe o método getCampanhasById
 import { Pasta, Campanha, Funil } from "@/types/PasteTypes";
 import { useRouter } from "next/router";
 
@@ -23,7 +24,14 @@ export default function AddPaste() {
     const loadPastasFromLocalStorage = async () => {
       try {
         const pastasFromAPI = await getAllPastas();
-        setPastas(pastasFromAPI);
+        // Para cada pasta, buscar as campanhas e atualizar a pasta com o número de campanhas
+        const pastasWithCampanhas = await Promise.all(
+          pastasFromAPI.map(async (pasta) => {
+            const campanhas = await getCampanhasById(pasta.id);
+            return { ...pasta, campanhas };
+          })
+        );
+        setPastas(pastasWithCampanhas);
       } catch (error) {
         console.error("Erro ao carregar pastas:", error);
       }
@@ -55,7 +63,7 @@ export default function AddPaste() {
     const selectedPasta = pastas[pastaIndex];
     if (selectedPasta) {
       sessionStorage.setItem("pasta_id", selectedPasta.id);
-      router.push("/RelacaoDeCampanha-Client");
+      router.push("/CLIENTE/RelacaoDeCampanha-Client");
     }
   };
 
@@ -131,7 +139,9 @@ export default function AddPaste() {
                         key={campanhaIndex}
                       >
                         <FaFlagCheckered /> {campanha.name}{" "}
-                        {`${campanha.funis!.length} funis`}
+                        {campanha.funis?.length !== undefined
+                          ? `${campanha.funis.length} funis`
+                          : ""}
                       </li>
                     ))}
                   </ul>
