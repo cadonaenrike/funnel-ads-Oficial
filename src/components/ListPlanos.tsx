@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { FaChartSimple, FaCirclePlus, FaEye, FaRegStar } from "react-icons/fa6";
 
-export default function CadPlanos() {
+export default function ListPlanos() {
   const router = useRouter();
   const handleClick = () => {
-    router.push("/EditarPlano");
+    router.push("/ADM/EditPlan");
   };
   return (
     <>
@@ -59,8 +59,26 @@ export default function CadPlanos() {
                 <td></td>
                 <td className="px-6 py-4">
                   <div className="flex gap-4 text-lg text-gray-700">
-                    <FaEye className="hover:cursor-pointer" />
-                    <FaChartSimple className="hover:cursor-pointer" />
+                    <button
+                      onClick={() =>
+                        router.push(
+                          `/ADM/EditPlan?id=${673213}&nome=${encodeURIComponent(
+                            "eu sou o nome"
+                          )}&valor=${encodeURIComponent(
+                            123
+                          )}&descricao=${encodeURIComponent(
+                            "asiduhasijdghajshdgjashdgsajashgdgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+                          )}`
+                        )
+                      }
+                      type="button"
+                      className="text-white m-5"
+                    >
+                      <img src="/icons/icon-edit-button.svg" />
+                    </button>
+                    <button type="button" className="text-white">
+                      <img src="/icons/icon-delete-button.svg" />
+                    </button>
                   </div>
                   {}
                 </td>

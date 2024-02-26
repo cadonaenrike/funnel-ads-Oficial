@@ -1,12 +1,12 @@
-import CadPla from "@/components/cadPlanos";
+import ListPlanos from "@/components/ListPlanos";
 import NavBar from "@/components/navBar";
 import useAdminCheck from "@/services/AdmService";
 
-export default function CadNewPlan() {
+export default function Planos() {
   useAdminCheck();
   return (
     <>
-      <NavBar /> <CadPla />
+      <NavBar /> <ListPlanos />
     </>
   );
 }

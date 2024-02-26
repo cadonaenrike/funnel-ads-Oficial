@@ -148,7 +148,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="CadNewPlan"
+                          href="Plans"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -235,7 +235,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="CadNewPlan"
+                          href="Plans"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"

@@ -210,23 +210,6 @@ export default function ADMEditHelp() {
               </>
             )}
           </button>
-
-          {/* <button
-            className="hover:bg-cyan-600 font-semibold text-white bg-cyan-950"
-            style={{
-              marginLeft: "15px",
-              height: "44px",
-              width: "160px",
-              borderRadius: "5px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            type="submit"
-          >
-            <FaArrowsRotate className="mr-5" />
-            Atualizar
-          </button> */}
         </div>
       </section>
     </>
