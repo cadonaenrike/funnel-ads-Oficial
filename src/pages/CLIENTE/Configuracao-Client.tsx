@@ -1,3 +1,4 @@
+import TwoFactorAuthenticationCard from "@/components/TwoFactorAuthenticationCard";
 import ConfigUserClient from "@/components/configUserClient";
 import DadosCadClient from "@/components/dadosCadClient";
 import IntegrationSection from "@/components/integracao";
@@ -98,20 +99,7 @@ export default function ConfiguracaoClient() {
 
           {active === 1 && (
             <section className="flex w-full h-auto p-8">
-              <section className="border-2 border-dotted px-6 py-7 bg-sky-50 border-sky-600 flex items-center gap-3 rounded-lg">
-                <FaShieldHalved size={40} className="text-primary" />
-                <section className="px-3 py-2">
-                  <h3 className="text-lg text-zinc-700">Proteja sua Conta</h3>
-                  <p className="text-sm text-neutral-600">
-                    A autenticação de dois fatores adiciona uma camada extra de
-                    segurança à sua conta. Para fazer login, você também
-                    precisará fornecer um código de seis dígitos.
-                  </p>
-                </section>
-                <button className="py-3  w-3/12 font-semibold text-white rounded-lg bg-slate-800 hover:bg-sky-800">
-                  Habilitar 2 Fatores
-                </button>
-              </section>
+              <TwoFactorAuthenticationCard />
             </section>
           )}
 

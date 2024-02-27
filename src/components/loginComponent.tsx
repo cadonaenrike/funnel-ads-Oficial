@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import * as yup from "yup";
 import Link from "next/link";
 import { LoginService } from "@/services/LoginService";
-import { getAdm } from "@/services/GetUser";
+import { getAdm } from "@/services/GetUserService";
 import { MdError } from "react-icons/md";
 import ErrorAlert from "./errorAlert";
 

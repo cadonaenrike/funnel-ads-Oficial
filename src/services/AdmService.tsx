@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { getAdm } from "@/services/GetUser";
+import { getAdm } from "@/services/GetUserService";
 
 const useAdminCheck = () => {
   const router = useRouter();

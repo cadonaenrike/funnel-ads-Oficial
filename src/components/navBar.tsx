@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/globalContext/userAdmin";
-import { fetchUserData, getAdm } from "@/services/GetUser";
+import { fetchUserData, getAdm } from "@/services/GetUserService";
 import { Menu, Transition } from "@headlessui/react";
 import { Poppins } from "next/font/google";
 import Image from "next/image";

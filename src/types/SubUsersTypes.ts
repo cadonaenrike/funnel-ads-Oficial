@@ -8,5 +8,6 @@ export interface SubUser {
   cargo: string;
   nivelAcesso: string;
   email: string;
-  foto?: string; // Opcional, dependendo de como você quer lidar com fotos
+  plano?: string;
+  foto?: string;
 }

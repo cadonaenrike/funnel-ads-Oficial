@@ -20,4 +20,5 @@ export interface UserTypes {
   bairro?: string; // Adicionado campo para bairro
   cidade?: string; // Adicionado campo para cidade
   estado?: string; // Adicionado campo para estado
+  dfatores?: boolean;
 }

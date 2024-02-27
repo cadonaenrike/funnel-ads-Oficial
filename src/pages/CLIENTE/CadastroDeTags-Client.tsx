@@ -161,21 +161,24 @@ export default function CadastroDeTags_Client() {
         </form>
 
         {/* Lista de tags */}
-        <div className="mt-5">
-          <h2 className="font-semibold mb-2">Lista de Tags</h2>
-          <ul>
+        <div className="mt-5 rounded-lg  ">
+          <h2 className="font-semibold mb-4">Lista de Tags</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {tags.map((tag) => (
-              <li key={tag.id}>
-                {tag.name}
+              <div
+                key={tag.id}
+                className="bg-slate-200 rounded-lg shadow-md p-4 flex justify-between hover:shadow-lg transition-shadow duration-300 ease-in-out"
+              >
+                <span className="text-slate-900">{tag.name}</span>
                 <button
                   onClick={() => handleDelete(tag.id)}
-                  className="ml-2 text-red-500"
+                  className="text-red-500 hover:text-red-700 transition-colors duration-150 ease-in-out"
                 >
-                  Excluir
+                  <FaXmark className="h-5 w-5" />
                 </button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
     </>
