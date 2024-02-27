@@ -1,8 +1,29 @@
+import { getAllPlans } from "@/services/PlanService";
+import { PlanType } from "@/types/PlanType";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { FaChartSimple, FaCirclePlus, FaEye, FaRegStar } from "react-icons/fa6";
 
 export default function ListPlanos() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [Plans, setPlans] = useState<PlanType[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const helpData = await getAllPlans();
+        setPlans(helpData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao obter dados de ajuda:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
   const handleClick = () => {
     router.push("/ADM/EditPlan");
   };

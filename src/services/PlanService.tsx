@@ -33,7 +33,9 @@ export const updatePlan = async (
 
 export const getAllPlans = async (): Promise<PlanType[]> => {
   try {
-    const response = await api.get<PlanType[]>("/getPlans"); // Ajuste na URL
+    const response = await api.get<PlanType[]>("/getPlans");
+    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Erro ao obter plans:", error);

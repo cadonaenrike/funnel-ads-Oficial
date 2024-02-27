@@ -11,6 +11,7 @@ import { FaDesktop, FaGithub, FaXbox } from "react-icons/fa6";
 import { IoPerson, IoPeopleSharp } from "react-icons/io5";
 import CardsSubUsers from "@/components/CardsSubUsers";
 import LastClientsCard from "@/components/cardLastClient";
+import CardHelps from "@/components/cardHelps";
 
 export default function Dashboard() {
   useAdminCheck();
@@ -41,18 +42,9 @@ export default function Dashboard() {
 
         <LastClientsCard title="Últimos Clientes" />
 
-        <Cards title="Suporte ao Cliente" showLink={false}>
-          <section className="flex w-full  gap-5 my-2 items-center border-l-green-500 border-l-4 pl-3 py-3">
-            <input type="checkbox" name="chekBox1" id="" className="h-5 w-5" />
-            <section className="flex flex-col">
-              <span className="text-sm">Create Company Logo</span>
-              <span className="font-extralight text-xs">a 1 dia</span>
-            </section>
-            <p className="bg-emerald-50 rounded-md px-3 py-1 text-emerald-500 ml-auto text-xs">
-              Iniciado
-            </p>
-          </section>
+        <CardHelps title="Suporte ao Cliente" />
 
+<<<<<<< HEAD
           <section className="flex w-full gap-5 my-2 items-center border-l-sky-500 border-l-4 pl-3 py-3">
             <input type="checkbox" name="chekBox1" id="" className="h-5 w-5" />
             <section className="flex flex-col">
@@ -97,6 +89,99 @@ export default function Dashboard() {
             </p>
           </section>
         </Cards>
+=======
+        {/* <Cards title="Tarefas" showLink={false}>
+          <section className="flex w-80 justify-start gap-5 items-center pl-3 ">
+            <section className="flex flex-row items-center gap-6">
+              <p>06:34</p>
+              <section className="flex flex-col">
+                <section className="flex flex-col items-center w-2 gap-0.5">
+                  <section>
+                    <div className="w-1 h-5 "></div>
+                  </section>
+                  <section>
+                    <div className="w-5 h-5 rounded-full bg-emerald-500"></div>
+                  </section>
+                  <section>
+                    <div className="w-1 h-5  bg-neutral-200"></div>
+                  </section>
+                </section>
+              </section>
+            </section>
+
+            <span className="text-sm font-normal">
+              Reactive bottom-line throughput
+            </span>
+          </section>
+
+          <section className="flex w-80 gap-5 items-center pl-3  justify-start">
+            <section className="flex flex-row items-center gap-6">
+              <p>06:34</p>
+              <section className="flex flex-col">
+                <section className="flex flex-col items-center w-2 gap-0.5">
+                  <section>
+                    <div className="w-1 h-5  bg-neutral-200"></div>
+                  </section>
+                  <section>
+                    <div className="w-5 h-5 rounded-full bg-sky-500"></div>
+                  </section>
+                  <section>
+                    <div className="w-1 h-5  bg-neutral-200"></div>
+                  </section>
+                </section>
+              </section>
+            </section>
+            <span className="text-sm font-normal">
+              Programmable high-level function
+            </span>
+          </section>
+
+          <section className="flex w-80 flex-row gap-5 items-center pl-3  justify-start">
+            <section className="flex flex-row items-center gap-6">
+              <p>06:34</p>
+              <section className="flex flex-col">
+                <section className="flex flex-col items-center w-2 gap-0.5">
+                  <section>
+                    <div className="w-1 h-5  bg-neutral-200"></div>
+                  </section>
+                  <section>
+                    <div className="w-5 h-5 rounded-full bg-rose-500"></div>
+                  </section>
+                  <section>
+                    <div className="w-1 h-5  bg-neutral-200"></div>
+                  </section>
+                </section>
+              </section>
+            </section>
+
+            <span className="text-sm font-normal">
+              Automated foreground ability
+            </span>
+          </section>
+
+          <section className="flex w-80 flex-row gap-5 items-center pl-3  justify-start">
+            <section className="flex flex-row items-center gap-6">
+              <p>06:34</p>
+              <section className="flex flex-col">
+                <section className="flex flex-col items-center w-2 gap-0.5">
+                  <section>
+                    <div className="w-1 h-5  bg-neutral-200"></div>
+                  </section>
+                  <section>
+                    <div className="w-5 h-5 rounded-full bg-yellow-400"></div>
+                  </section>
+                  <section>
+                    <div className="w-1 h-5  bg-neutral-200"></div>
+                  </section>
+                </section>
+              </section>
+            </section>
+            <span className="text-sm font-normal">
+              Integrated static middleware
+            </span>
+          </section>
+        </Cards> */}
+>>>>>>> d438b2ff721d1700274d752847ded0079b091c11
       </section>
     </>
   );
