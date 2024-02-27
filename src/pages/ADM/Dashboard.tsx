@@ -11,6 +11,7 @@ import { FaDesktop, FaGithub, FaXbox } from "react-icons/fa6";
 import { IoPerson, IoPeopleSharp } from "react-icons/io5";
 import CardsSubUsers from "@/components/CardsSubUsers";
 import LastClientsCard from "@/components/cardLastClient";
+import CardHelps from "@/components/cardHelps";
 
 export default function Dashboard() {
   useAdminCheck();
@@ -41,64 +42,9 @@ export default function Dashboard() {
 
         <LastClientsCard title="Últimos Clientes" />
 
-        <Cards title="Suporte ao Cliente" showLink={false}>
-          <section className="flex w-full  gap-5 my-2 items-center border-l-green-500 border-l-4 pl-3 py-3">
-            <input type="checkbox" name="chekBox1" id="" className="h-5 w-5" />
-            <section className="flex flex-col">
-              <span className="text-sm">Create Company Logo</span>
-              <span className="font-extralight text-xs">a 1 dia</span>
-            </section>
-            <p className="bg-emerald-50 rounded-md px-3 py-1 text-emerald-500 ml-auto text-xs">
-              Iniciado
-            </p>
-          </section>
+        <CardHelps title="Suporte ao Cliente" />
 
-          <section className="flex w-full gap-5 my-2 items-center border-l-sky-500 border-l-4 pl-3 py-3">
-            <input type="checkbox" name="chekBox1" id="" className="h-5 w-5" />
-            <section className="flex flex-col">
-              <span className="text-sm">Stakeholder Meeting</span>
-              <span className="font-extralight text-xs">a 3 dia</span>
-            </section>
-            <p className="bg-sky-50 rounded-md px-3 py-1 text-sky-500 ml-auto text-xs">
-              Novo
-            </p>
-          </section>
-
-          <section className="flex w-full  gap-5 my-2 items-center border-l-rose-500 border-l-4 pl-3 py-3">
-            <input type="checkbox" name="chekBox1" id="" className="h-5 w-5" />
-            <section className="flex flex-col">
-              <span className="text-sm">Projeto Meeting</span>
-              <span className="font-extralight text-xs">21 Set 2023</span>
-            </section>
-            <p className="bg-rose-50 rounded-md px-3 py-1 text-rose-500 ml-auto text-xs">
-              Cancelado
-            </p>
-          </section>
-
-          <section className="flex w-full gap-5 my-2 items-center border-l-yellow-400 border-l-4 pl-3 py-3">
-            <input type="checkbox" name="chekBox1" id="" className="h-5 w-5" />
-            <section className="flex flex-col">
-              <span className="text-sm">Projeto Meeting</span>
-              <span className="font-extralight text-xs">21 Set 2023</span>
-            </section>
-            <p className="bg-yellow-50 rounded-md px-3 py-1 text-yellow-400 ml-auto text-xs">
-              Cancelado
-            </p>
-          </section>
-
-          <section className="flex w-full gap-5 my-2 items-center border-l-violet-600 border-l-4 pl-3 py-3">
-            <input type="checkbox" name="chekBox1" id="" className="h-5 w-5" />
-            <section className="flex flex-col">
-              <span className="text-sm">Get Customer Feedback</span>
-              <span className="font-extralight text-xs">20 Set 2022</span>
-            </section>
-            <p className="bg-violet-50 rounded-md px-3 py-1 text-violet-600 ml-auto text-xs">
-              Encerrado
-            </p>
-          </section>
-        </Cards>
-
-        <Cards title="Tarefas" showLink={false}>
+        {/* <Cards title="Tarefas" showLink={false}>
           <section className="flex w-80 justify-start gap-5 items-center pl-3 ">
             <section className="flex flex-row items-center gap-6">
               <p>06:34</p>
@@ -188,7 +134,7 @@ export default function Dashboard() {
               Integrated static middleware
             </span>
           </section>
-        </Cards>
+        </Cards> */}
       </section>
     </>
   );
