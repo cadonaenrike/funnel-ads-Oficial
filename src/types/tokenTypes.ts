@@ -1,7 +1,8 @@
 export interface TokenData {
+  id?: string;
   nome: string;
   token: string;
-  iduser: string;
+  iduser?: string;
 }
 
 export interface TokenUpdateData {

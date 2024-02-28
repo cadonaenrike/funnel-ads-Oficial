@@ -23,7 +23,12 @@ import {
   MdOutlinePhone,
 } from "react-icons/md";
 import { FaExclamationCircle } from "react-icons/fa";
-import { GetUserById, updateUserById } from "@/services/GetUserService";
+import {
+  GetUserById,
+  deleteUserById,
+  updateUserById,
+} from "@/services/GetUserService";
+import { useRouter } from "next/router";
 
 export default function MyData() {
   const [foto, setFoto] = useState<File | null>(null);
@@ -45,13 +50,19 @@ export default function MyData() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [desativarConta, setDesativarConta] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleDesativarConta = () => {
     setDesativarConta(!desativarConta);
   };
 
-  const clickDesativarConta = () => {
-    console.log("Conta desativada");
+  const clickDesativarConta = async () => {
+    const r = await deleteUserById(sessionStorage.getItem("idUser"));
+    if (r) {
+      sessionStorage.clear();
+      localStorage.clear();
+      router.push("/Login");
+    }
   };
 
   const handleImageClick = () => {
@@ -71,8 +82,6 @@ export default function MyData() {
   useEffect(() => {
     async function getUser() {
       const user = await GetUserById();
-      console.log(user);
-
       setNome(user?.nome || "");
       setSobrenome(user?.sobrenome || "");
       setCpf(user?.cpf || "");
@@ -520,7 +529,7 @@ export default function MyData() {
               justifyContent: "center",
             }}
             disabled={!desativarConta}
-            onClick={handleDesativarConta}
+            onClick={clickDesativarConta}
           >
             Desativar Conta
           </button>

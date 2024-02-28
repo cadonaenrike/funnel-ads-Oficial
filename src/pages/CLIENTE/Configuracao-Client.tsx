@@ -1,15 +1,28 @@
+import AddTokenModal from "@/components/AddTokenModal";
 import TwoFactorAuthenticationCard from "@/components/TwoFactorAuthenticationCard";
 import ConfigUserClient from "@/components/configUserClient";
 import DadosCadClient from "@/components/dadosCadClient";
 import IntegrationSection from "@/components/integracao";
 import NavBar from "@/components/navBar";
-import { useState } from "react";
+import {
+  deleteToken,
+  getTokens,
+  postToken,
+  updateToken,
+} from "@/services/tokenService";
+import { TokenData } from "@/types/tokenTypes";
+import { useEffect, useState } from "react";
 import { FaCogs } from "react-icons/fa";
 import { FaCircle, FaEye, FaRegCopy, FaShieldHalved } from "react-icons/fa6";
 
 export default function ConfiguracaoClient() {
   const [active, setActive] = useState<number | null>(0);
   const [selected, setSelected] = useState(false);
+  const [tokens, setTokens] = useState<TokenData[]>([]);
+  const [tokenModal, setTokenModal] = useState<
+    (TokenData & { open: boolean }) | undefined
+  >(undefined);
+  const [tokensLoading, setTokensLoading] = useState(false);
 
   const handleSelected = () => {
     setSelected(!selected);
@@ -19,6 +32,48 @@ export default function ConfiguracaoClient() {
   const handleSection = (i: number) => {
     setActive((prevI) => (prevI === i ? null : i));
     setSelected(false);
+  };
+
+  const handleCadastroToken = async ({
+    nome,
+    token,
+    edit,
+  }: {
+    nome: string;
+    token: string;
+    edit: boolean;
+  }) => {
+    console.log(edit);
+
+    if (edit) {
+      await updateToken(tokenModal?.id!, { nome, token });
+      setTokens(
+        tokens.map((t) => (t.id === tokenModal?.id ? { ...t, nome, token } : t))
+      );
+    } else {
+      await postToken({ nome, token });
+      setTokens([...tokens, { nome, token }]);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchTokens() {
+      setTokensLoading(true);
+      try {
+        const Tokens = await getTokens();
+
+        setTokens(Tokens);
+        setTokensLoading(false);
+      } catch (error) {
+        console.error("Erro ao obter dados de Plans:", error);
+      }
+    }
+    fetchTokens();
+  }, []);
+
+  const handleDeleteToken = async (id: string) => {
+    setTokens(tokens.filter((t) => t.id !== id));
+    await deleteToken(id);
   };
   return (
     <>
@@ -150,44 +205,78 @@ export default function ConfiguracaoClient() {
             </section>
           )}
 
-          {active === 4 && (
-            <section className="flex w-full h-auto flex-col gap-3 p-8">
-              <section className="border-2 border-dotted px-6 py-7 bg-sky-50 border-sky-600 flex items-center gap-3 rounded-lg">
-                <FaShieldHalved size={40} className="text-primary" />
-                <section className="px-3 py-2">
-                  <h3 className="text-xl text-zinc-700">Token</h3>
-                  <p className="text-base text-neutral-600 mt-2">
-                    O token é gerado de maneira única, caso você clique em
-                    &quot;<em>Gerar Token</em>&quot; o token atual será
-                    substituido e todas as aplicações com o token antigo não
-                    irão mais funcionar.
-                  </p>
-                </section>
-              </section>
-              <section className="flex items-center gap-3">
-                <input
-                  type="text"
-                  className="rounded-lg bg-slate-50 p-2 w-8/12 outline-none"
-                  disabled
-                />
-                <FaEye />
-              </section>
-              <section className="flex items-center gap-3">
-                <input
-                  type="text"
-                  className="rounded-lg bg-slate-50 p-2 w-8/12 outline-none"
-                  disabled
-                />
-                <button className="p-2 bg-slate-800 text-white rounded-lg w-48 hover:bg-primary-600">
-                  Gerar Token
+          {active === 4 &&
+            (tokensLoading ? (
+              <>
+                <div className=" w-full flex justify-center text-center">
+                  <span className="loader blue-loader mt-10"></span>
+                </div>
+              </>
+            ) : (
+              <section className="flex w-full h-auto flex-col gap-3 p-8">
+                <button
+                  onClick={() =>
+                    setTokenModal({ nome: "", token: "", open: true })
+                  }
+                  className="p-2 bg-slate-800 text-white rounded-lg w-48 hover:bg-primary-600"
+                >
+                  Adicionar Token
                 </button>
-                <button className="flex items-center gap-2 text-slate-800">
-                  <FaRegCopy />
-                  <u>Copiar Token</u>
-                </button>
+                <table className="w-full rounded-xl text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+                  <thead className="text-xs text-gray-700 uppercase bg-zinc-100 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                      <th scope="col" className="px-6 py-3">
+                        Nome
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Token
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-right pe-10">
+                        Ações
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tokens.map((token) => (
+                      <tr
+                        key={token.id}
+                        className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                      >
+                        <td className="px-6 py-4">{token.nome}</td>
+
+                        <td>{token.token}</td>
+                        <td className="px-6 py-4 flex justify-end pe-10">
+                          <div className="flex gap-4 text-lg text-gray-700 flex justify-end">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setTokenModal({
+                                  id: token.id,
+                                  nome: token.nome,
+                                  token: token.token,
+                                  open: true,
+                                })
+                              }
+                              className="text-white m-5"
+                            >
+                              <img src="/icons/icon-edit-button.svg" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteToken(token.id!)}
+                              type="button"
+                              className="text-white"
+                            >
+                              <img src="/icons/icon-delete-button.svg" />
+                            </button>
+                          </div>
+                          {}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </section>
-            </section>
-          )}
+            ))}
           {active === 5 && (
             <section className="flex w-full h-auto flex-col gap-3 p-8">
               {" "}
@@ -196,6 +285,11 @@ export default function ConfiguracaoClient() {
           )}
         </section>
       </section>
+      <AddTokenModal
+        onOk={handleCadastroToken}
+        isClose={() => setTokenModal(undefined)}
+        isOpen={tokenModal}
+      />
     </>
   );
 }
