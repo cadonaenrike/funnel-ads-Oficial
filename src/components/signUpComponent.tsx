@@ -4,6 +4,7 @@ import Button from "@/components/button";
 import Input from "./inputComponent";
 import StyledCheckbox from "./checkBox";
 import { useRouter } from "next/router";
+import { CriaLoginService, LoginService } from "@/services/LoginService";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -60,28 +61,19 @@ export default function SignUpComponent() {
 
     if (senha === senhaIstrue && validatePassword()) {
       try {
-        const response = await fetch(
-          "https://serve-qm5b.vercel.app/criar-conta",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              nome,
-              sobrenome,
-              email,
-              senha,
-              isAdmin: true,
-            }),
-          }
-        );
+        const response = await CriaLoginService.createAccount({
+          nome,
+          sobrenome,
+          email,
+          senha,
+          isAdmin: false,
+        });
 
-        if (response.ok) {
+        if (response!) {
           console.log("Conta criada com sucesso");
           router.push("/Login");
         } else {
-          console.error("Erro ao criar conta:", response.statusText);
+          console.error("Erro ao criar conta:", response);
         }
       } catch (error: any) {
         console.error("Erro ao criar conta:", error.message);

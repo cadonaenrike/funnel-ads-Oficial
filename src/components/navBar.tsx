@@ -15,6 +15,7 @@ import {
   FaCircleUser,
   FaFilter,
   FaRegAddressCard,
+  FaPager,
 } from "react-icons/fa6";
 import { FaCogs, FaRegFileAlt } from "react-icons/fa";
 import { MdPhotoCamera } from "react-icons/md";
@@ -407,27 +408,21 @@ export default function NavBar() {
                         </Link>
                       )}
                     </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <Link
-                          target="_blank"
-                          href="https://visual-editor-eight.vercel.app"
-                          className={classNames(
-                            active
-                              ? "bg-slate-800 text-cyan-600"
-                              : "text-white",
-                            "flex px-4 py-2 text-sm items-center gap-2"
-                          )}
-                        >
-                          <FaChevronRight />
-                          Landing Page
-                        </Link>
-                      )}
-                    </Menu.Item>
                   </div>
                 </Menu.Items>
               </Transition>
             </Menu>
+            <Link
+              target="_blank"
+              href="https://visual-editor-eight.vercel.app"
+              className={classNames(
+                "text-white",
+                "flex px-4 py-2 text-sm items-center gap-2"
+              )}
+            >
+              <FaPager />
+              Landing Page
+            </Link>
             <Menu as="div" className={"relative inline-block text-left"}>
               <div>
                 <Menu.Button className="inline-flex w-full justify-center items-center gap-x-1.5 border-none bg-transparent px-3 py-2 font-medium text-sm text-white hover:text-cyan-600">
@@ -586,15 +581,6 @@ export default function NavBar() {
               </Transition>
             </Menu>
 
-            <Link
-              onClick={exitDashBoard}
-              href="/Login"
-              className="inline-flex items-center px-3 py-2 text-white font-medium text-sm hover:text-cyan-600"
-            >
-              {" "}
-              <FaArrowRightFromBracket className=" h-5 w-5 mr-3" /> Sair
-            </Link>
-
             <Menu as="div" className={"relative inline-block text-left"}>
               <div>
                 <Menu.Button className="inline-flex w-full justify-center items-center gap-x-1.5 border-none rounded-full bg-gray-300 px-2.5 py-2 mb-2 font-medium text-sm text-white hover:text-cyan-600">
@@ -631,22 +617,7 @@ export default function NavBar() {
                         </Link>
                       )}
                     </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <Link
-                          href="/CLIENTE/MyData"
-                          className={classNames(
-                            active
-                              ? "bg-slate-800 text-cyan-600"
-                              : "text-white",
-                            "flex px-4 py-2 text-sm items-center gap-2"
-                          )}
-                        >
-                          <FaRegAddressCard />
-                          Minha Conta
-                        </Link>
-                      )}
-                    </Menu.Item>
+
                     <Menu.Item>
                       {({ active }) => (
                         <Link

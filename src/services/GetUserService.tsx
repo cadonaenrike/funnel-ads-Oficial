@@ -91,3 +91,25 @@ export const updateUserById = async (
     return false;
   }
 };
+
+// Método para deletar um usuário por ID
+export const deleteUserById = async (
+  userId: string | null
+): Promise<boolean> => {
+  try {
+    if (!userId) {
+      console.error("ID do usuário não fornecido");
+      return false;
+    }
+
+    const response = await api.delete(`/deleteUsuario/${userId}`);
+    if (response.status === 200 || response.status === 204) {
+      console.log("Usuário deletado com sucesso");
+      return true; // Retorna true se a deleção foi bem-sucedida
+    }
+    return false;
+  } catch (error) {
+    console.error("Erro ao tentar deletar usuário por ID", error);
+    return false;
+  }
+};

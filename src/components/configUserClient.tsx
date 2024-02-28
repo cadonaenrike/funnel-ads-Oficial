@@ -45,9 +45,6 @@ export default function ConfigUserClient() {
           <th scope="col" className="w-4 py-4 font-normal">
             Configurações
           </th>
-          <th scope="col" className="w-4 py-4 font-normal">
-            Bate-papo
-          </th>
           <th scope="col" className="w-4 py-4 font-normal"></th>
         </tr>
       </thead>
@@ -83,9 +80,7 @@ export default function ConfigUserClient() {
             <td className="whitespace-nowrap py-6 pl-5 flex">
               <ToggleSwitch />
             </td>
-            <td className="whitespace-nowrap py-6">
-              <ToggleSwitch />
-            </td>
+
             <td className="whitespace-nowrap py-4">
               <FaEllipsisV
                 className="hover:text-primary hover:cursor-pointer"
