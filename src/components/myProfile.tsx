@@ -1,22 +1,33 @@
-import React, { ChangeEvent, FormEvent, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Image from "next/image";
 import {
   FaArrowsRotate,
   FaCircleUser,
   FaRegEnvelope,
+  FaRegFloppyDisk,
   FaShieldHalved,
   FaXmark,
 } from "react-icons/fa6";
+import { GetUserById, updateUserById } from "@/services/GetUserService";
 
 export default function MyProfile() {
   const [foto, setFoto] = useState<File | null>(null);
-  const [nome, setNome] = useState("");
-  const [sobrenome, setSobrenome] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [celular, setCelular] = useState("");
-  const [cargo, setCargo] = useState("");
-  const [nivelAcesso, setNivelAcesso] = useState("");
-  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [usuario, setUsuario] = useState({
+    nome: "",
+    sobrenome: "",
+    cpf: "",
+    senha: "",
+    telefone: "",
+    cargo: "",
+    email: "",
+  });
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleImageClick = () => {
@@ -25,27 +36,52 @@ export default function MyProfile() {
     }
   };
 
-  const handleCadastro = (e: FormEvent) => {
+  useEffect(() => {
+    async function getUser() {
+      const user = await GetUserById();
+      setUsuario({ ...usuario, ...user, senha: "" });
+    }
+    getUser();
+  }, []);
+
+  const handleCadastro = async (e: FormEvent) => {
+    if (loading) return;
     e.preventDefault();
-    setFoto(null);
-    setNome("");
-    setSobrenome("");
-    setCpf("");
-    setCelular("");
-    setCargo("");
-    setNivelAcesso("");
-    setEmail("");
+    setLoading(true);
+    await updateUserById(usuario);
+    alert("Usuário atualizado com sucesso.");
+    setLoading(false);
+  };
+
+  const handleEmail = async (e: FormEvent) => {
+    if (loading) return;
+    e.preventDefault();
+    setLoading(true);
+    await updateUserById({ email: usuario.email });
+    alert("Usuário atualizado com sucesso.");
+    setLoading(false);
+  };
+
+  const handleSenha = async (e: FormEvent) => {
+    if (loading) return;
+    e.preventDefault();
+    setLoading(true);
+    await updateUserById({ senha: usuario.senha });
+    alert("Usuário atualizado com sucesso.");
+    setLoading(false);
   };
 
   const handleCancelar = () => {
     setFoto(null);
-    setNome("");
-    setSobrenome("");
-    setCpf("");
-    setCelular("");
-    setCargo("");
-    setNivelAcesso("");
-    setEmail("");
+    setUsuario({
+      nome: "",
+      sobrenome: "",
+      cpf: "",
+      telefone: "",
+      cargo: "",
+      email: "",
+      senha: "",
+    });
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +92,6 @@ export default function MyProfile() {
       setFoto(arquivoSelecionado);
     }
   };
-
   return (
     <>
       <section className="flex max-w-screen-xl mx-auto text-sky-950 text-4xl mt-10 mb-5">
@@ -66,7 +101,6 @@ export default function MyProfile() {
       <section className="bg-white max-w-screen-xl mt-5 mx-auto flex flex-col p-5 rounded-lg shadow-lg">
         <div style={{ marginTop: "15px" }}>
           <form onSubmit={handleCadastro} className="relative">
-            {/* div foto upload */}
             <div style={{ paddingBottom: "15px" }}>
               <label
                 style={{
@@ -112,26 +146,58 @@ export default function MyProfile() {
 
             <section className="flex flex-col absolute  top-12 right-0 w-2/3 items-center justify-between">
               <section className="w-full flex items-center justify-between border-b-2 pb-3 mb-2">
-                <label htmlFor="">E-mail atual</label>
-                <button className="bg-amber-500 w-40 h-11 rounded-lg font-semibold text-white flex items-center justify-center gap-3 p-2">
+                <section className="flex flex-col w-[70%]">
+                  <label htmlFor="">E-mail atual</label>
+                  <input
+                    className="rounded-lg bg-gray-100 focus:bg-gray-200 focus:outline-none pl-2"
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={usuario.email}
+                    style={{ width: "100%", height: "44px" }}
+                    onChange={(e) =>
+                      setUsuario({ ...usuario, email: e.target.value })
+                    }
+                  />
+                </section>
+
+                <button
+                  onClick={handleEmail}
+                  disabled={loading}
+                  className="bg-amber-500 w-40 h-11 rounded-lg font-semibold text-white flex items-center justify-center gap-3 p-2"
+                >
                   <FaRegEnvelope />
                   Alterar E-mail
                 </button>
               </section>
 
               <section className="w-full flex justify-between items-center border-b-2 pb-3">
-                <section className="flex flex-col">
+                <section className="flex flex-col w-[70%]">
                   <label htmlFor="">Senha atual</label>
-                  <label htmlFor="">*******</label>
+                  <input
+                    className="rounded-lg bg-gray-100 focus:bg-gray-200 focus:outline-none pl-2"
+                    type="senha"
+                    id="senha"
+                    name="senha"
+                    value={usuario.senha}
+                    style={{ width: "100%", height: "44px" }}
+                    onChange={(e) =>
+                      setUsuario({ ...usuario, senha: e.target.value })
+                    }
+                  />
                 </section>
-                <button className="bg-amber-500 w-40 h-11 rounded-lg font-semibold text-white flex items-center justify-center gap-3 p-2">
+                <button
+                  onClick={handleSenha}
+                  disabled={loading}
+                  className="bg-amber-500 w-40 h-11 rounded-lg font-semibold text-white flex items-center justify-center gap-3 p-2"
+                >
                   <FaShieldHalved />
                   Alterar Senha
                 </button>
               </section>
             </section>
 
-            <div className="flex flex-row gap-5  w-3">
+            <div className="flex flex-row gap-5  w-3 mt-5">
               <div>
                 <label style={{ color: "#022D46" }} htmlFor="nome">
                   Nome:
@@ -141,9 +207,11 @@ export default function MyProfile() {
                   type="text"
                   id="nome"
                   name="nome"
-                  value={nome}
+                  value={usuario.nome}
                   style={{ width: "400px", height: "44px" }}
-                  onChange={(e) => setNome(e.target.value)}
+                  onChange={(e) =>
+                    setUsuario({ ...usuario, nome: e.target.value })
+                  }
                 />
               </div>
 
@@ -157,9 +225,11 @@ export default function MyProfile() {
                   type="text"
                   id="sobrenome"
                   name="sobrenome"
-                  value={sobrenome}
+                  value={usuario.sobrenome}
                   style={{ width: "820px", height: "44px" }}
-                  onChange={(e) => setSobrenome(e.target.value)}
+                  onChange={(e) =>
+                    setUsuario({ ...usuario, sobrenome: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -170,14 +240,15 @@ export default function MyProfile() {
                   CPF:
                 </label>
                 <input
-                  className="rounded-lg read-only:bg-gray-300 pl-2"
+                  className="rounded-lg bg-gray-100 focus:bg-gray-200 focus:outline-none pl-2"
                   type="text"
                   id="cpf"
                   name="cpf"
-                  value={cpf}
+                  value={usuario.cpf}
                   style={{ width: "400px", height: "44px" }}
-                  onChange={(e) => setCpf(e.target.value)}
-                  disabled
+                  onChange={(e) =>
+                    setUsuario({ ...usuario, cpf: e.target.value })
+                  }
                 />
               </div>
 
@@ -190,9 +261,11 @@ export default function MyProfile() {
                   type="text"
                   id="celular"
                   name="celular"
-                  value={celular}
+                  value={usuario.telefone}
                   style={{ width: "400px", height: "44px" }}
-                  onChange={(e) => setCelular(e.target.value)}
+                  onChange={(e) =>
+                    setUsuario({ ...usuario, telefone: e.target.value })
+                  }
                 />
               </div>
 
@@ -201,53 +274,15 @@ export default function MyProfile() {
                   Cargo:
                 </label>
                 <input
-                  className="rounded-lg bg-gray-100 pl-2 read-only:bg-gray-300"
+                  className="rounded-lg bg-gray-100 focus:bg-gray-200 focus:outline-none pl-2"
                   type="text"
                   id="cargo"
                   name="cargo"
-                  value={cargo}
+                  value={usuario.cargo}
                   style={{ width: "400px", height: "44px" }}
-                  onChange={(e) => setCargo(e.target.value)}
-                  disabled
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-row items-center gap-1 w-3">
-              <div>
-                <label style={{ color: "#022D46" }} htmlFor="nivelAcesso">
-                  Nível de Acesso:
-                </label>
-                <br />
-                <select
-                  className="rounded-lg read-only:bg-gray-300 pl-2"
-                  id="nivelAcesso"
-                  name="nivelAcesso"
-                  value={nivelAcesso}
-                  style={{ width: "400px", height: "44px" }}
-                  onChange={(e) => setNivelAcesso(e.target.value)}
-                  disabled
-                >
-                  <option value="1">Nível 1</option>
-                  <option value="2">Nível 2</option>
-                  <option value="3">Nível 3</option>
-                </select>
-              </div>
-
-              <div style={{ paddingLeft: "15px" }}>
-                <label style={{ color: "#022D46" }} htmlFor="email">
-                  E-mail:
-                </label>
-                <br />
-                <input
-                  className="rounded-lg read-only:bg-gray-300 pl-2"
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={email}
-                  style={{ width: "820px", height: "44px" }}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled
+                  onChange={(e) =>
+                    setUsuario({ ...usuario, cargo: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -280,6 +315,7 @@ export default function MyProfile() {
               </button>
 
               <button
+                disabled={loading}
                 className="hover:bg-sky-700 font-semibold text-white"
                 style={{
                   backgroundColor: "#064b72",
@@ -293,8 +329,14 @@ export default function MyProfile() {
                 }}
                 type="submit"
               >
-                <FaArrowsRotate className="mr-5" />
-                Atualizar
+                {loading ? (
+                  <span className="loader" />
+                ) : (
+                  <>
+                    {" "}
+                    <FaArrowsRotate className="mr-5" /> Atualizar
+                  </>
+                )}
               </button>
             </div>
           </form>

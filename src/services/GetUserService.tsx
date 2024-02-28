@@ -41,10 +41,8 @@ export const fetchUserData = async (
 export const getAdm = async (id: number): Promise<AdminStatus | null> => {
   try {
     const response = await api.get<AdminStatus>(`/usuarios/isAdmin/${id}`);
-    console.log("Resposta do getAdm:", response);
 
     if (response.data) {
-      console.log(response.data);
       return response.data; // Retorna o status de administrador
     } else {
       return null; // Retorna null se a resposta não contiver dados
@@ -74,9 +72,16 @@ export const GetUserById = async (): Promise<UserTypes | null> => {
 export const updateUserById = async (
   userData: Partial<UserTypes>
 ): Promise<boolean> => {
+  console.log(userData);
+
   const userId = sessionStorage.getItem("idUser");
+  const filteredNull = Object.fromEntries(
+    Object.entries(userData).filter(([_, valor]) => valor !== null)
+  );
+
   try {
-    const response = await api.put(`/putUsuarios/${userId}`, userData);
+    const response = await api.put(`/putUsuarios/${userId}`, filteredNull);
+
     if (response.status === 200) {
       return true; // Retorna true se a atualização foi bem-sucedida
     }

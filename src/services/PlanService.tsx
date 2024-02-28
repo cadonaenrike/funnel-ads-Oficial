@@ -15,14 +15,14 @@ export const updatePlan = async (
   id: string,
   nome?: string,
   valor?: number,
-  descrição?: string
+  descricao?: string
 ): Promise<PlanType> => {
   try {
     const response = await api.put<PlanType>(`/putPlan/${id}`, {
       id,
       nome,
       valor,
-      descrição,
+      descricao,
     });
     return response.data;
   } catch (error) {
@@ -34,9 +34,7 @@ export const updatePlan = async (
 export const getAllPlans = async (): Promise<PlanType[]> => {
   try {
     const response = await api.get<PlanType[]>("/getPlans");
-    console.log(response.data);
-
-    return response.data;
+    return response.data || [];
   } catch (error) {
     console.error("Erro ao obter plans:", error);
     throw error;

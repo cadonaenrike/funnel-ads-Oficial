@@ -19,13 +19,13 @@ export default function EditPlan() {
   interface PlanForm {
     nome: string;
     valor: number;
-    descrição: string;
+    descricao: string;
   }
 
   const [form, setForm] = useState<PlanForm>({
     nome: (router.query.nome as string) || "",
     valor: Number(router.query.valor as string) || 0,
-    descrição: (router.query.descricao as string) || "",
+    descricao: (router.query.descricao as string) || "",
   });
 
   const [requiredTopico, setRequiredTopico] = useState(false);
@@ -56,9 +56,9 @@ export default function EditPlan() {
 
     !router.query.id
       ? await addPlan(form)
-      : await updatePlan(id, form.nome, form.valor, form.descrição);
+      : await updatePlan(id, form.nome, form.valor, form.descricao);
 
-    router.push("/ADM/Help");
+    router.push("/ADM/Plans");
   };
 
   useAdminCheck();
@@ -112,8 +112,8 @@ export default function EditPlan() {
         <section className="mt-3 flex flex-col gap-3 pb-10">
           <h2 className="text-gray-500 font-bold">Descrição do plano</h2>
           <EditorTexto
-            value={form.descrição}
-            setValue={(e) => setForm({ ...form, descrição: e })}
+            value={form.descricao}
+            setValue={(e) => setForm({ ...form, descricao: e })}
             placeholder={"Typings"}
           />
         </section>
