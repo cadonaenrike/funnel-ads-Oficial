@@ -1,4 +1,4 @@
-import { UserTypes } from "@/types/UserType";
+import { UserTypes, converterUsuario } from "@/types/UserType";
 import api from "./Api";
 
 export interface AdminStatus {
@@ -59,7 +59,7 @@ export const GetUserById = async (): Promise<UserTypes | null> => {
   try {
     const response = await api.get<UserTypes>(`/getUsuarios/${userId}`);
     if (response.status === 200) {
-      return response.data; // Retorna os dados do usuário
+      return converterUsuario(response.data); // Retorna os dados do usuário
     }
     return null;
   } catch (error) {
@@ -70,10 +70,8 @@ export const GetUserById = async (): Promise<UserTypes | null> => {
 
 // Método para atualizar dados do usuário por ID
 export const updateUserById = async (
-  userData: Partial<UserTypes>
+  userData: Record<string, string>
 ): Promise<boolean> => {
-  console.log(userData);
-
   const userId = sessionStorage.getItem("idUser");
   const filteredNull = Object.fromEntries(
     Object.entries(userData).filter(([_, valor]) => valor !== null)
@@ -83,7 +81,7 @@ export const updateUserById = async (
     const response = await api.put(`/putUsuarios/${userId}`, filteredNull);
 
     if (response.status === 200) {
-      return true; // Retorna true se a atualização foi bem-sucedida
+      return true;
     }
     return false;
   } catch (error) {

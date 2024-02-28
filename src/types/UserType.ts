@@ -22,3 +22,29 @@ export interface UserTypes {
   estado?: string; // Adicionado campo para estado
   dfatores?: boolean;
 }
+
+export function converterUsuario(apiUsuario: any): UserTypes {
+  return {
+    id: apiUsuario.id,
+    nome: apiUsuario.nome,
+    sobrenome: apiUsuario.sobrenome,
+    email: apiUsuario.email,
+    senha: apiUsuario.senha,
+    isadmin: apiUsuario.isadmin,
+    fotoSelecionada: apiUsuario.foto, // Supondo que 'foto' seja a propriedade para 'fotoSelecionada'
+    responsavel: apiUsuario.nome_responsavel,
+    cpf: apiUsuario.cpf,
+    nomeFantasia: apiUsuario.nome_fantasia,
+    razaoSocial: apiUsuario.razao_social,
+    cnpj: apiUsuario.cnpj,
+    telefone: apiUsuario.telefone,
+    cep: apiUsuario.cep,
+    endereco: apiUsuario.endereco,
+    numero: apiUsuario.numero,
+    complemento: apiUsuario.complemento,
+    bairro: apiUsuario.bairro,
+    cidade: apiUsuario.cidade,
+    estado: apiUsuario.estado,
+    dfatores: apiUsuario.dfatores,
+  };
+}

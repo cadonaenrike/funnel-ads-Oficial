@@ -1,4 +1,10 @@
-import React, { ChangeEvent, FormEvent, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Image from "next/image";
 
 import {
@@ -17,22 +23,28 @@ import {
   MdOutlinePhone,
 } from "react-icons/md";
 import { FaExclamationCircle } from "react-icons/fa";
+import { GetUserById, updateUserById } from "@/services/GetUserService";
 
 export default function MyData() {
   const [foto, setFoto] = useState<File | null>(null);
-  const [nome, setNome] = useState("teste");
+  const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
-  const [cnpj, setCnpj] = useState("teste");
-  const [cep, setCep] = useState("teste");
-  const [endereco, setEndereco] = useState("teste");
+  const [cnpj, setCnpj] = useState("");
+  const [cep, setCep] = useState("");
+  const [endereco, setEndereco] = useState("");
+  const [numero, setNumero] = useState("");
+  const [complemento, setComplemento] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [estado, setEstado] = useState("");
   const [cpf, setCpf] = useState("");
-  const [celular, setCelular] = useState("(00) 0000-0000");
-  const [telefone, setTelefone] = useState("(00) 0000-0000");
+  const [telefone, setTelefone] = useState("");
   const [nomeFantasia, setNomeFantasia] = useState("");
   const [razaoSocial, setRazaoSocial] = useState("");
-  const [email, setEmail] = useState("teste@teste");
+  const [email, setEmail] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [desativarConta, setDesativarConta] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleDesativarConta = () => {
     setDesativarConta(!desativarConta);
@@ -48,16 +60,65 @@ export default function MyData() {
     }
   };
 
+  function formatarTelefone(telefone: number | string) {
+    // Remove caracteres não numéricos
+    const numeros = telefone.toString().replace(/\D/g, "");
+
+    // Aplica a formatação
+    return numeros.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  }
+
+  useEffect(() => {
+    async function getUser() {
+      const user = await GetUserById();
+      console.log(user);
+
+      setNome(user?.nome || "");
+      setSobrenome(user?.sobrenome || "");
+      setCpf(user?.cpf || "");
+      setTelefone(user?.telefone || "");
+      setNomeFantasia(user?.nomeFantasia || "");
+      setRazaoSocial(user?.razaoSocial || "");
+      setEmail(user?.email || "");
+      setCnpj(user?.cnpj || "");
+      setCep(user?.cep || "");
+      setEndereco(user?.endereco || "");
+      setNumero(user?.numero || "");
+      setComplemento(user?.complemento || "");
+      setBairro(user?.bairro || "");
+      setCidade(user?.cidade || "");
+      setEstado(user?.estado || "");
+    }
+    getUser();
+  }, []);
+
   const handleCadastro = (e: FormEvent) => {
     e.preventDefault();
-    setFoto(null);
-    setNome("");
-    setSobrenome("");
-    setCpf("");
-    setCelular("");
-    setNomeFantasia("");
-    setRazaoSocial("");
-    setEmail("");
+    async function cadastro() {
+      if (loading) return;
+      e.preventDefault();
+      setLoading(true);
+      await updateUserById({
+        nome,
+        sobrenome,
+        cpf,
+        nome_fantasia: nomeFantasia,
+        razao_social: razaoSocial,
+        cnpj: cnpj,
+        telefone: telefone,
+        cep,
+        endereco,
+        numero: numero,
+        complemento,
+        bairro,
+        cidade,
+        estado,
+      });
+      alert("Usuário atualizado com sucesso.");
+
+      setLoading(false);
+    }
+    cadastro();
   };
 
   const handleCancelar = () => {
@@ -65,7 +126,7 @@ export default function MyData() {
     setNome("");
     setSobrenome("");
     setCpf("");
-    setCelular("");
+    setTelefone("");
     setNomeFantasia("");
     setRazaoSocial("");
     setEmail("");
@@ -79,6 +140,19 @@ export default function MyData() {
       setFoto(arquivoSelecionado);
     }
   };
+
+  function formatarCEP(cep: string) {
+    const cepLimpo = cep.replace(/\D/g, "");
+    return cepLimpo.replace(/^(\d{5})(\d{3})$/, "$1-$2");
+  }
+
+  function formatarCNPJ(cnpj: string) {
+    const cnpjLimpo = cnpj.replace(/\D/g, "");
+    return cnpjLimpo.replace(
+      /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+      "$1.$2.$3/$4-$5"
+    );
+  }
 
   return (
     <>
@@ -110,7 +184,7 @@ export default function MyData() {
             "
             >
               <p className="flex items-center">
-                <MdOutlinePhone className="m-1" /> {celular}
+                <MdOutlinePhone className="m-1" /> {formatarTelefone(telefone)}
               </p>
               <p className="flex items-center">
                 <MdOutlineEmail className="m-1" /> {email}
@@ -131,14 +205,14 @@ export default function MyData() {
         </section>
         <section className="bg-slate-100 p-4 w-4/12 flex flex-col rounded-xl text-start justify-center">
           <p className="text-base font-semibold m-4">
-            CNPJ: <span className="font-normal">{cnpj}</span>
+            CNPJ: <span className="font-normal">{formatarCNPJ(cnpj)}</span>
           </p>
           <p className="text-base font-semibold flex m-4">
             <FaLocationDot className={"mr-1 "} />
-            <span className="font-normal">{endereco}</span>
+            <span className="font-normal">{`${cidade} - ${estado}`}</span>
           </p>
           <p className="text-base font-semibold m-4">
-            CEP: <span className="font-normal">{cep}</span>
+            CEP: <span className="font-normal">{formatarCEP(cep)}</span>
           </p>
         </section>
       </section>
@@ -293,6 +367,8 @@ export default function MyData() {
           <section className="flex items-center w-full justify-between">
             <label htmlFor="numero">Número:</label>
             <input
+              value={numero}
+              onChange={(e) => setNumero(e.target.value)}
               type="text"
               name="numero"
               placeholder=""
@@ -302,6 +378,8 @@ export default function MyData() {
           <section className="flex items-center w-full justify-between">
             <label htmlFor="complemento">Complemento:</label>
             <input
+              value={complemento}
+              onChange={(e) => setComplemento(e.target.value)}
               type="text"
               name="complemento"
               placeholder=""
@@ -311,6 +389,8 @@ export default function MyData() {
           <section className="flex items-center w-full justify-between">
             <label htmlFor="bairro">Bairro:</label>
             <input
+              value={bairro}
+              onChange={(e) => setBairro(e.target.value)}
               type="text"
               name="bairro"
               placeholder=""
@@ -320,6 +400,8 @@ export default function MyData() {
           <section className="flex items-center w-full justify-between">
             <label htmlFor="cidade">Cidade:</label>
             <input
+              value={cidade}
+              onChange={(e) => setCidade(e.target.value)}
               type="text"
               name="cidade"
               placeholder=""
@@ -329,6 +411,8 @@ export default function MyData() {
           <section className="flex items-center w-full justify-between">
             <label htmlFor="estado">Estado:</label>
             <input
+              value={estado}
+              onChange={(e) => setEstado(e.target.value)}
               type="text"
               name="estado"
               placeholder=""
@@ -362,6 +446,7 @@ export default function MyData() {
             </button>
 
             <button
+              disabled={loading}
               className="hover:bg-cyan-600 font-semibold text-white bg-sky-900"
               style={{
                 marginLeft: "15px",
@@ -374,8 +459,14 @@ export default function MyData() {
               }}
               type="submit"
             >
-              <FaFloppyDisk className="mr-5" />
-              Salvar
+              {loading ? (
+                <span className="loader" />
+              ) : (
+                <>
+                  {" "}
+                  <FaFloppyDisk className="mr-5" /> Salvar{" "}
+                </>
+              )}
             </button>
           </div>
         </form>
