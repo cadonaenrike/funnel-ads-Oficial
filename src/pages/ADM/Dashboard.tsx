@@ -38,103 +38,10 @@ export default function Dashboard() {
         <Cardsgraphic title="Visitantes no site" showLink={false}>
           <Graphics types="bar" />
         </Cardsgraphic>
-        <CardsCampanha title="Minhas Campanhas" showLink={true}></CardsCampanha>
 
         <LastClientsCard title="Últimos Clientes" />
 
         <CardHelps title="Suporte ao Cliente" />
-
-        <Cards title="Tarefas" showLink={false}>
-          <section className="flex w-80 justify-start gap-5 items-center pl-3 ">
-            <section className="flex flex-row items-center gap-6">
-              <p>06:34</p>
-              <section className="flex flex-col">
-                <section className="flex flex-col items-center w-2 gap-0.5">
-                  <section>
-                    <div className="w-1 h-5 "></div>
-                  </section>
-                  <section>
-                    <div className="w-5 h-5 rounded-full bg-emerald-500"></div>
-                  </section>
-                  <section>
-                    <div className="w-1 h-5  bg-neutral-200"></div>
-                  </section>
-                </section>
-              </section>
-            </section>
-
-            <span className="text-sm font-normal">
-              Reactive bottom-line throughput
-            </span>
-          </section>
-
-          <section className="flex w-80 gap-5 items-center pl-3  justify-start">
-            <section className="flex flex-row items-center gap-6">
-              <p>06:34</p>
-              <section className="flex flex-col">
-                <section className="flex flex-col items-center w-2 gap-0.5">
-                  <section>
-                    <div className="w-1 h-5  bg-neutral-200"></div>
-                  </section>
-                  <section>
-                    <div className="w-5 h-5 rounded-full bg-sky-500"></div>
-                  </section>
-                  <section>
-                    <div className="w-1 h-5  bg-neutral-200"></div>
-                  </section>
-                </section>
-              </section>
-            </section>
-            <span className="text-sm font-normal">
-              Programmable high-level function
-            </span>
-          </section>
-
-          <section className="flex w-80 flex-row gap-5 items-center pl-3  justify-start">
-            <section className="flex flex-row items-center gap-6">
-              <p>06:34</p>
-              <section className="flex flex-col">
-                <section className="flex flex-col items-center w-2 gap-0.5">
-                  <section>
-                    <div className="w-1 h-5  bg-neutral-200"></div>
-                  </section>
-                  <section>
-                    <div className="w-5 h-5 rounded-full bg-rose-500"></div>
-                  </section>
-                  <section>
-                    <div className="w-1 h-5  bg-neutral-200"></div>
-                  </section>
-                </section>
-              </section>
-            </section>
-
-            <span className="text-sm font-normal">
-              Automated foreground ability
-            </span>
-          </section>
-
-          <section className="flex w-80 flex-row gap-5 items-center pl-3  justify-start">
-            <section className="flex flex-row items-center gap-6">
-              <p>06:34</p>
-              <section className="flex flex-col">
-                <section className="flex flex-col items-center w-2 gap-0.5">
-                  <section>
-                    <div className="w-1 h-5  bg-neutral-200"></div>
-                  </section>
-                  <section>
-                    <div className="w-5 h-5 rounded-full bg-yellow-400"></div>
-                  </section>
-                  <section>
-                    <div className="w-1 h-5  bg-neutral-200"></div>
-                  </section>
-                </section>
-              </section>
-            </section>
-            <span className="text-sm font-normal">
-              Integrated static middleware
-            </span>
-          </section>
-        </Cards>
       </section>
     </>
   );

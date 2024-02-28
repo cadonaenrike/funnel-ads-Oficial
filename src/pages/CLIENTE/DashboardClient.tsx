@@ -33,7 +33,6 @@ export default function DashboardClient() {
         <Cardsgraphic title="Visitantes no site" showLink={false}>
           <Graphics types="bar" />
         </Cardsgraphic>
-        <CardsCampanha title="Minhas Campanhas" showLink={true}></CardsCampanha>
       </section>
     </>
   );
