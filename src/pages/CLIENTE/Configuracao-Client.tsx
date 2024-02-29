@@ -3,6 +3,7 @@ import TwoFactorAuthenticationCard from "@/components/TwoFactorAuthenticationCar
 import ConfigUserClient from "@/components/configUserClient";
 import DadosCadClient from "@/components/dadosCadClient";
 import IntegrationSection from "@/components/integracao";
+import MyData from "@/components/myData";
 import NavBar from "@/components/navBar";
 import { getPlanByUserId } from "@/services/PlanService";
 import {
@@ -162,8 +163,8 @@ export default function ConfiguracaoClient() {
         </nav>
         <section>
           {active === 0 && (
-            <section className="flex w-full h-auto p-8">
-              <DadosCadClient />
+            <section className="">
+              <MyData />
             </section>
           )}
 
