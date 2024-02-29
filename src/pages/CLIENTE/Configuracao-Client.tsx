@@ -4,12 +4,14 @@ import ConfigUserClient from "@/components/configUserClient";
 import DadosCadClient from "@/components/dadosCadClient";
 import IntegrationSection from "@/components/integracao";
 import NavBar from "@/components/navBar";
+import { getPlanByUserId } from "@/services/PlanService";
 import {
   deleteToken,
   getTokens,
   postToken,
   updateToken,
 } from "@/services/tokenService";
+import { PlanType } from "@/types/PlanType";
 import { TokenData } from "@/types/tokenTypes";
 import { useEffect, useState } from "react";
 import { FaCogs } from "react-icons/fa";
@@ -23,10 +25,10 @@ export default function ConfiguracaoClient() {
     (TokenData & { open: boolean }) | undefined
   >(undefined);
   const [tokensLoading, setTokensLoading] = useState(false);
+  const [plan, setPlan] = useState<PlanType>();
 
   const handleSelected = () => {
     setSelected(!selected);
-    console.log(selected);
   };
 
   const handleSection = (i: number) => {
@@ -43,8 +45,6 @@ export default function ConfiguracaoClient() {
     token: string;
     edit: boolean;
   }) => {
-    console.log(edit);
-
     if (edit) {
       await updateToken(tokenModal?.id!, { nome, token });
       setTokens(
@@ -68,13 +68,28 @@ export default function ConfiguracaoClient() {
         console.error("Erro ao obter dados de Plans:", error);
       }
     }
-    fetchTokens();
+
+    async function getPlan() {
+      const plan = await getPlanByUserId();
+      if (plan) setPlan(plan);
+    }
+    getPlan();
   }, []);
 
   const handleDeleteToken = async (id: string) => {
     setTokens(tokens.filter((t) => t.id !== id));
     await deleteToken(id);
   };
+
+  const formatCurrency = (number: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    })
+      .format(number)
+      .slice(2);
+  };
+
   return (
     <>
       <NavBar />
@@ -166,42 +181,47 @@ export default function ConfiguracaoClient() {
 
           {active === 3 && (
             <section className="flex w-full h-auto p-8">
-              <section
-                onClick={() => handleSelected()}
-                className={`border-2 w-full border-dotted cursor-pointer px-6 py-2 hover:border-primary-500 flex items-center gap-3 rounded-lg justify-between ${
-                  selected ? "border-primary-500" : ""
-                }`}
-              >
-                <section className="flex items-center gap-10">
-                  <section
-                    className={`h-8 w-8 rounded-full bg-slate-200 flex items-center justify-center ${
-                      selected ? "border-primary-500 border-4 bg-white" : ""
-                    }`}
-                  >
-                    {selected ? <FaCircle className="text-primary-500" /> : ""}
-                  </section>
-                  <section className="px-3 py-2">
-                    <h3 className="text-xl text-slate-700 font-semibold">
-                      Starter
-                    </h3>
-                    <ul
-                      className="text-zinc-700 font-normal text-sm ml-5"
-                      style={{ listStyle: "inside" }}
+              {plan ? (
+                <section
+                  onClick={() => handleSelected()}
+                  className={`border-2 w-full border-dotted cursor-pointer px-6 py-2 hover:border-primary-500 flex items-center gap-3 rounded-lg justify-between ${
+                    selected ? "border-primary-500" : ""
+                  }`}
+                >
+                  <section className="flex items-center gap-10">
+                    <section
+                      className={`h-8 w-8 rounded-full bg-slate-200 flex items-center justify-center ${
+                        selected ? "border-primary-500 border-4 bg-white" : ""
+                      }`}
                     >
-                      <li>Outra Descrição</li>
-                      <li>Be or not Be</li>
-                      <li>B4</li>
-                    </ul>
+                      {selected ? (
+                        <FaCircle className="text-primary-500" />
+                      ) : (
+                        ""
+                      )}
+                    </section>
+                    <section className="px-3 py-2">
+                      <h3 className="text-xl text-slate-700 font-semibold">
+                        {plan.nome}
+                      </h3>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: plan.descricao || "",
+                        }}
+                      />
+                    </section>
+                  </section>
+                  <section className="flex items-center">
+                    <p className="font-semibold text-lg text-slate-800">R$</p>
+                    <h2 className="text-5xl font-semibold text-slate-800">
+                      {formatCurrency(plan.valor)}
+                    </h2>
+                    <span className="ml-2 text-neutral-600">/mês</span>
                   </section>
                 </section>
-                <section className="flex items-center">
-                  <p className="font-semibold text-lg text-slate-800">R$</p>
-                  <h2 className="text-5xl font-semibold text-slate-800">
-                    199,99
-                  </h2>
-                  <span className="ml-2 text-neutral-600">/mês</span>
-                </section>
-              </section>
+              ) : (
+                <p>Você não tem nenhum plano associado a sua conta.</p>
+              )}
             </section>
           )}
 

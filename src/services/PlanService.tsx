@@ -54,6 +54,21 @@ export const getPlanById = async (id: string): Promise<PlanType | null> => {
   }
 };
 
+export const getPlanByUserId = async (): Promise<PlanType | null> => {
+  try {
+    const response = await api.get(
+      `/getIdUserPlans/${sessionStorage.getItem("idUser")}`
+    );
+    if (response.status === 200) {
+      return response.data.plano;
+    }
+    return null;
+  } catch (error) {
+    console.error(`Erro ao obter o plano com ID do usuario:`, error);
+    throw error;
+  }
+};
+
 export const deletePlan = async (id: string): Promise<PlanType> => {
   try {
     const response = await api.delete<PlanType>(`/deletePlan/${id}`); // Ajuste na URL
