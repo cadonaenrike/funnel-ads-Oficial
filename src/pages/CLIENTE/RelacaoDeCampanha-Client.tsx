@@ -3,9 +3,7 @@ import NavBar from "@/components/navBar";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   FaCirclePlus,
-  FaCircleXmark,
   FaFlagCheckered,
-  FaFloppyDisk,
   FaFolderOpen,
   FaRegFolderOpen,
   FaRegPenToSquare,
@@ -16,7 +14,6 @@ import { getPastaById } from "@/services/PastaService";
 import {
   addCampanhaToPasta,
   deleteCampanha,
-  getCampanhas,
   getCampanhasById,
 } from "@/services/CampanhaService";
 import { Pasta, Campanha } from "@/types/PasteTypes";
@@ -58,8 +55,17 @@ export default function AddPaste() {
     e.preventDefault();
     const pastaId = sessionStorage.getItem("pasta_id");
     if (!pastaId || !novaCampanhaNome.trim()) return;
-
-    await addCampanhaToPasta(pastaId, { name: novaCampanhaNome, funis: [] });
+    const useridcapturado = sessionStorage.getItem("idUser");
+    if (!useridcapturado) {
+      alert("Não possui usuário logado");
+      router.push("/Login");
+      return;
+    }
+    await addCampanhaToPasta(pastaId, {
+      name: novaCampanhaNome,
+      userid: useridcapturado,
+      funis: [],
+    });
     const updatedCampanhas = await getCampanhasById(pastaId);
     setCampanhas(updatedCampanhas);
     setNovaCampanhaNome("");

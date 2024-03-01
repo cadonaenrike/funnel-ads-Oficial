@@ -104,6 +104,7 @@ export default function CustomerRelationship() {
       setCargo("");
       setNivelAcesso("");
       setEmail("");
+      router.push("/CLIENTE/Usuario-Client");
     } else {
       alert("Falha ao criar ou atualizar SubUser.");
     }

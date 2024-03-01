@@ -10,6 +10,7 @@ export const addLead = async (
       nome: lead.nome,
       celular: lead.celular,
       email: lead.email,
+      userid: lead.userid,
       tag: lead.tag.map((t) => t.id),
     });
     return response.data;

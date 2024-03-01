@@ -12,6 +12,7 @@ import {
   FaXmark,
 } from "react-icons/fa6";
 import Select from "react-select";
+import { string } from "yup";
 
 interface Options {
   readonly value: string;
@@ -40,8 +41,9 @@ export default function CadastroDeLeads_Client() {
         console.error("Erro ao obter as tags:", error);
       }
     };
+
     fetchTags();
-  }, []);
+  }, [router]); // Dependências do useEffect
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -79,11 +81,17 @@ export default function CadastroDeLeads_Client() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const useridcapturado = sessionStorage.getItem("idUser");
+    if (!useridcapturado) {
+      alert("Não possui usuário logado");
+      router.push("/Login");
+      return;
+    }
     const leadData: Omit<LeadsType, "id"> = {
       nome: name,
       celular: celular,
       email: email,
+      userid: useridcapturado,
       tag: selectedTags.map((tag) => ({ id: tag.value, name: tag.label })),
     };
 
