@@ -63,10 +63,12 @@ export default function LoginComponent() {
       setLoading(false); // Parando o loading independentemente do resultado
 
       if (response && response.status === 200) {
+        const admResponse = response.data.user.isadmin;
         const userId = response.data.user.id;
         sessionStorage.setItem("idUser", `${userId}`);
-        const admResponse = await getAdm(userId);
-        sessionStorage.setItem("isAdm", `${admResponse?.isadmin === true}`);
+        sessionStorage.setItem("isAdm", `${admResponse}`);
+
+        console.log(admResponse);
 
         if (response.data.user.dfatores === true) {
           router.push("/AutenticacaoPage");
@@ -74,7 +76,7 @@ export default function LoginComponent() {
         }
 
         try {
-          if (admResponse?.isadmin === true) {
+          if (admResponse === true) {
             router.push("/ADM/Dashboard");
           } else {
             router.push("/CLIENTE/DashboardClient");
