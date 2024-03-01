@@ -68,6 +68,23 @@ export const GetUserById = async (): Promise<UserTypes | null> => {
   }
 };
 
+export const getContagemStatus = async (): Promise<{
+  total_campanhas: number;
+  total_lead: number;
+} | null> => {
+  const userId = sessionStorage.getItem("idUser");
+  try {
+    const response = await api.get(`/getTotal/${userId}`);
+    if (response.status === 200) {
+      return response.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Erro ao tentar buscar usuário por ID", error);
+    return null;
+  }
+};
+
 // Método para atualizar dados do usuário por ID
 export const updateUserById = async (
   userData: Record<string, string>

@@ -65,7 +65,7 @@ export const getPlanByUserId = async (): Promise<PlanType | null> => {
     return null;
   } catch (error) {
     console.error(`Erro ao obter o plano com ID do usuario:`, error);
-    throw error;
+    return null;
   }
 };
 
