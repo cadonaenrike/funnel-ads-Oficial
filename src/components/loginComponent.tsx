@@ -70,15 +70,15 @@ export default function LoginComponent() {
 
         sessionStorage.setItem("idUser", `${userId}`);
 
-        console.log(admResponse);
-
         if (response.data.user.dfatores === true) {
           router.push("/AutenticacaoPage");
           return;
         }
 
+        console.log(admResponse);
+
         try {
-          if (admResponse === "true") {
+          if (admResponse) {
             router.push("/ADM/Dashboard");
           } else {
             router.push("/CLIENTE/DashboardClient");
