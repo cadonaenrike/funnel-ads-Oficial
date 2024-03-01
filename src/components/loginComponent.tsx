@@ -65,8 +65,9 @@ export default function LoginComponent() {
       if (response && response.status === 200) {
         const admResponse = response.data.user.isadmin;
         const userId = response.data.user.id;
-        sessionStorage.setItem("isAdm", `${admResponse}`);
-        localStorage.setItem("isAdm", `${admResponse}`);
+        await localStorage.setItem("isAdm", `${admResponse}`);
+        await sessionStorage.setItem("isAdm", `${admResponse}`);
+
         sessionStorage.setItem("idUser", `${userId}`);
 
         console.log(admResponse);
