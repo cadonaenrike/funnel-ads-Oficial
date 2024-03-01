@@ -89,7 +89,7 @@ export default function NavBar() {
             />
 
             <Link
-              href="Dashboard"
+              href="/ADM/Dashboard"
               className="inline-flex items-center gap-x-1.5 text-white font-medium text-sm px-3 py-2 hover:text-cyan-600"
             >
               {" "}

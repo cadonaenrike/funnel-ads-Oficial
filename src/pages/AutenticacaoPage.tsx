@@ -9,21 +9,12 @@ export default function Home() {
   useEffect(() => {
     async function obterSegredo() {
       try {
-        const headers = {
-          "content-type": "application/json",
-        };
-
-        // Inclui o cabeçalho 'api-key' apenas se ele existir
-        if (process.env.NEXT_PUBLIC_APYKEY) {
-          // @ts-ignore
-          headers["api-key"] = process.env.NEXT_PUBLIC_APYKEY;
-        }
-
         const resposta = await fetch(
           "https://funnelads.vercel.app/autenticacao",
           {
-            method: "GET",
-            headers: headers,
+            headers: {
+              "api-key": "tpfTech",
+            },
           }
         );
         const dados = await resposta.json();
@@ -38,23 +29,15 @@ export default function Home() {
 
   async function handleSubmit(event: { preventDefault: () => void }) {
     event.preventDefault();
-
-    const headers = {
-      "content-type": "application/json",
-    };
-
-    // Inclui o cabeçalho 'api-key' apenas se ele existir
-    if (process.env.NEXT_PUBLIC_APYKEY) {
-      // @ts-ignore
-      headers["api-key"] = process.env.NEXT_PUBLIC_APYKEY;
-    }
-
     try {
       const resposta = await fetch(
-        "https://funnelads.vercel.app//verificar-codigo",
+        "https://funnelads.vercel.app/autenticacao/verificar-codigo",
         {
           method: "POST",
-          headers: headers,
+          headers: {
+            "Content-Type": "application/json",
+            "api-key": "tpfTech",
+          },
           body: JSON.stringify({ codigo: codigo, segredo: segredo }),
         }
       );
@@ -65,6 +48,7 @@ export default function Home() {
       console.error("Erro ao verificar o código:", error);
     }
   }
+
   return (
     <div style={{ padding: "160px 0px 0px 750px" }}>
       {segredo && (
