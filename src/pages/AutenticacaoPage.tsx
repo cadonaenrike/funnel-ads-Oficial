@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import QRCode from "qrcode.react";
+import { useRouter } from "next/router";
+import Button from "@/components/button";
 
 export default function Home() {
   const [segredo, setSegredo] = useState<{ otpauth_url: string } | null>(null);
   const [codigo, setCodigo] = useState("");
   const [resultadoVerificacao, setResultadoVerificacao] = useState("");
-
+  const router = useRouter();
   useEffect(() => {
     async function obterSegredo() {
       try {
@@ -43,6 +45,22 @@ export default function Home() {
       );
 
       const dados = await resposta.json();
+      console.log(dados);
+      if (dados.mensagem === "Código incorreto") {
+        alert("Código incorreto");
+        return;
+      } else {
+        const Admin = sessionStorage.getItem("isAdm");
+        if (Admin !== null) {
+          if (Admin === "true") {
+            router.push("/ADM/Dashboard");
+          } else {
+            router.push("CLIENTE/DashboardClient");
+          }
+        } else {
+          router.push("/Login");
+        }
+      }
       setResultadoVerificacao(dados.mensagem);
     } catch (error) {
       console.error("Erro ao verificar o código:", error);
@@ -50,25 +68,37 @@ export default function Home() {
   }
 
   return (
-    <div style={{ padding: "160px 0px 0px 750px" }}>
+    <div className="flex flex-col items-center justify-center min-h-screen py-2">
       {segredo && (
-        <QRCode
-          value={segredo.otpauth_url}
-          style={{ height: "350px", width: "350px" }}
-        />
+        <div className="mb-4">
+          <h1 className="mb-6 text-3xl font-bold text-center text-slate-800">
+            Escaneie o QR Code
+          </h1>
+          <QRCode value={segredo.otpauth_url} size={300} />
+        </div>
       )}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="w-full max-w-xs">
         <input
           type="text"
-          style={{ width: "231px" }}
+          className="w-full px-3 py-3 leading-tight text-amber-500 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
           value={codigo}
           onChange={(e) => setCodigo(e.target.value)}
           placeholder="Digite o código"
         />
-        <button type="submit">Verificar Código</button>
+        <button
+          type="submit"
+          className="w-full px-4 py-4 mt-4 rounded-3xl text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:shadow-outline"
+        >
+          Verificar Código
+        </button>
       </form>
-      {resultadoVerificacao && <p>{resultadoVerificacao}</p>}
+
+      {resultadoVerificacao && (
+        <div className="mt-4 text-center text-red-500">
+          {resultadoVerificacao}
+        </div>
+      )}
     </div>
   );
 }

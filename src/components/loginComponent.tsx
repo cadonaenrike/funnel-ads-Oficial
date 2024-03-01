@@ -45,6 +45,9 @@ export default function LoginComponent() {
   };
 
   const logar = async () => {
+    // Resetando mensagens de erro a cada tentativa de login
+    setError("");
+
     if (email === "") {
       setError("Favor digite um email válido");
       return;
@@ -57,47 +60,38 @@ export default function LoginComponent() {
       setLoading(true);
       const response = await LoginService.login({ email, senha });
 
-      if (response) {
-        setLoading(false);
-        if (response.status === 200) {
-          // Supondo que o ID do usuário esteja disponível na resposta do login
-          const userId = response.data.user.id;
+      setLoading(false); // Parando o loading independentemente do resultado
 
-          try {
-            const admResponse = await getAdm(userId);
-            if (admResponse?.isadmin === true) {
-              // Armazena 'true' como string porque sessionStorage só armazena strings
-              sessionStorage.setItem("isAdm", "true");
-              sessionStorage.setItem("idUser", `${userId}`);
-              if (response.data.user.dfatores === true) {
-                router.push("/AutenticacaoPage");
-              }
-              // Redireciona para a dashboard do administrador
-              router.push("/ADM/Dashboard");
-            } else {
-              // Se não houver erro, mas o usuário não for encontrado como adm, considera não adm
-              sessionStorage.setItem("isAdm", "false");
-              sessionStorage.setItem("idUser", `${userId}`);
-              // Redireciona para a dashboard do cliente
-              router.push("/CLIENTE/DashboardClient");
-            }
-          } catch (error) {
-            setError(`Erro ao verificar status de administrador: ${error}`);
-            setLoading(false);
-            sessionStorage.setItem("isAdm", "false");
+      if (response && response.status === 200) {
+        const userId = response.data.user.id;
+        sessionStorage.setItem("idUser", `${userId}`);
+
+        if (response.data.user.dfatores === true) {
+          router.push("/AutenticacaoPage");
+          return;
+        }
+
+        try {
+          const admResponse = await getAdm(userId);
+          sessionStorage.setItem("isAdm", `${admResponse?.isadmin === true}`);
+
+          if (admResponse?.isadmin === true) {
+            router.push("/ADM/Dashboard");
+          } else {
+            router.push("/CLIENTE/DashboardClient");
           }
-        } else {
-          setLoading(false);
-          setError("E-mail ou senha inválidos");
+        } catch (error) {
+          setError(`Erro ao verificar status de administrador: ${error}`);
         }
       } else {
-        setLoading(false);
+        // Se o status não for 200 ou não houver resposta, redireciona para a página de login
         setError("E-mail ou senha inválidos");
+        router.push("/Login");
       }
     } catch (error) {
-      setLoading(false);
       console.error("Erro ao tentar logar", error);
       setError("Falha ao receber a resposta do servidor");
+      setLoading(false);
     }
   };
 
