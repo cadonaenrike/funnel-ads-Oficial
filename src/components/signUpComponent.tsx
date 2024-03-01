@@ -69,7 +69,7 @@ export default function SignUpComponent() {
           isAdmin: false,
         });
 
-        if (response!) {
+        if (!response) {
           console.log("Conta criada com sucesso");
           router.push("/Login");
         } else {

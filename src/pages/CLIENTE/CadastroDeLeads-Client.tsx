@@ -21,7 +21,7 @@ interface Options {
 
 export default function CadastroDeLeads_Client() {
   const router = useRouter();
-  const [name, setName] = useState("");
+  const [nome, setNome] = useState("");
   const [celular, setCelular] = useState("");
   const [email, setEmail] = useState("");
   const [selectedTags, setSelectedTags] = useState<Options[]>([]);
@@ -51,7 +51,7 @@ export default function CadastroDeLeads_Client() {
         const { leadId, nome, celular, email, tags } = router.query;
         if (leadId) {
           setLeadId(leadId as string);
-          setName(nome as string);
+          setNome(nome as string);
           setCelular(celular as string);
           setEmail(email as string);
           if (tags) {
@@ -88,7 +88,7 @@ export default function CadastroDeLeads_Client() {
       return;
     }
     const leadData: Omit<LeadsType, "id"> = {
-      nome: name,
+      nome,
       celular: celular,
       email: email,
       userid: useridcapturado,
@@ -126,8 +126,8 @@ export default function CadastroDeLeads_Client() {
               <h2>Nome</h2>
               <input
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
                 type="text"
                 placeholder="Primeiro nome"
                 className="placeholder:text-neutral-400 bg-slate-100 h-12 rounded-lg focus:outline-none px-3"
