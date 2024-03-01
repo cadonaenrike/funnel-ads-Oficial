@@ -94,7 +94,7 @@ export default function AddPaste() {
         <h1 className="font-semibold text-2xl ml-2">Pasta: {pasta?.name}</h1>
       </section>
 
-      <div className="flex justify-end px-28 ">
+      <div className="flex justify-end px-28 mr-52 ">
         <button
           onClick={() => setShowModal(true)}
           className="bg-amber-500 h-12 px-12 py-2 rounded-lg text-white font-semibold flex flex-row gap-2 items-center"
