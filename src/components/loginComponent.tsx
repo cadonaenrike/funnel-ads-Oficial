@@ -83,7 +83,6 @@ export default function LoginComponent() {
           setError(`Erro ao verificar status de administrador: ${error}`);
         }
       } else {
-        // Se o status não for 200 ou não houver resposta, redireciona para a página de login
         setError("E-mail ou senha inválidos");
         router.push("/Login");
       }
