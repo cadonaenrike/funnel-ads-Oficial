@@ -65,6 +65,8 @@ export default function LoginComponent() {
       if (response && response.status === 200) {
         const userId = response.data.user.id;
         sessionStorage.setItem("idUser", `${userId}`);
+        const admResponse = await getAdm(userId);
+        sessionStorage.setItem("isAdm", `${admResponse?.isadmin === true}`);
 
         if (response.data.user.dfatores === true) {
           router.push("/AutenticacaoPage");
@@ -72,9 +74,6 @@ export default function LoginComponent() {
         }
 
         try {
-          const admResponse = await getAdm(userId);
-          sessionStorage.setItem("isAdm", `${admResponse?.isadmin === true}`);
-
           if (admResponse?.isadmin === true) {
             router.push("/ADM/Dashboard");
           } else {
