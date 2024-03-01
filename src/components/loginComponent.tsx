@@ -69,6 +69,9 @@ export default function LoginComponent() {
               // Armazena 'true' como string porque sessionStorage só armazena strings
               sessionStorage.setItem("isAdm", "true");
               sessionStorage.setItem("idUser", `${userId}`);
+              if (response.data.user.dfatores === true) {
+                router.push("/AutenticacaoPage");
+              }
               // Redireciona para a dashboard do administrador
               router.push("/ADM/Dashboard");
             } else {

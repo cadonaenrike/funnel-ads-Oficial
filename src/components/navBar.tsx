@@ -270,14 +270,6 @@ export default function NavBar() {
               </Transition>
             </Menu>
 
-            <Link
-              onClick={exitDashBoard}
-              href="/Login"
-              className="inline-flex items-center px-3 py-2 text-white font-medium text-sm hover:text-cyan-600"
-            >
-              <FaArrowRightFromBracket className=" h-5 w-5 mr-3" /> Sair
-            </Link>
-
             <Menu as="div" className={"relative inline-block text-left"}>
               <div>
                 <Menu.Button className="inline-flex w-full justify-center items-center gap-x-1.5 border-none bg-transparent px-3 py-2 font-medium text-sm text-white hover:text-cyan-600">

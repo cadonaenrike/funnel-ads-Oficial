@@ -30,6 +30,15 @@ export const getAllLeads = async (): Promise<LeadsType[]> => {
     throw error;
   }
 };
+export const getLeadUserId = async (idUser: string): Promise<LeadsType[]> => {
+  try {
+    const response = await api.get<LeadsType[]>(`/getLeadsIdUser/${idUser}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao obter leads:", error);
+    throw error;
+  }
+};
 
 // Atualizar um lead existente
 export const updateLead = async (
