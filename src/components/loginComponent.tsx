@@ -60,7 +60,7 @@ export default function LoginComponent() {
       setLoading(true);
       const response = await LoginService.login({ email, senha });
       sessionStorage.setItem("isAdm", `${response?.data.user.isadmin}`);
-      setLoading(false); // Parando o loading independentemente do resultado
+      setLoading(false);
 
       if (response && response.status === 200) {
         const admResponse = response.data.user.isadmin;
