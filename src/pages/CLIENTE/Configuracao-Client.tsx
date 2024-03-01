@@ -5,6 +5,7 @@ import DadosCadClient from "@/components/dadosCadClient";
 import IntegrationSection from "@/components/integracao";
 import MyData from "@/components/myData";
 import NavBar from "@/components/navBar";
+import { getContagemStatus } from "@/services/GetUserService";
 import { getPlanByUserId } from "@/services/PlanService";
 import {
   deleteToken,
@@ -22,6 +23,7 @@ export default function ConfiguracaoClient() {
   const [active, setActive] = useState<number | null>(0);
   const [selected, setSelected] = useState(false);
   const [tokens, setTokens] = useState<TokenData[]>([]);
+
   const [tokenModal, setTokenModal] = useState<
     (TokenData & { open: boolean }) | undefined
   >(undefined);
@@ -74,7 +76,9 @@ export default function ConfiguracaoClient() {
       const plan = await getPlanByUserId();
       if (plan) setPlan(plan);
     }
+
     getPlan();
+    fetchTokens();
   }, []);
 
   const handleDeleteToken = async (id: string) => {

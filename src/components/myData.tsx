@@ -26,6 +26,7 @@ import { FaExclamationCircle } from "react-icons/fa";
 import {
   GetUserById,
   deleteUserById,
+  getContagemStatus,
   updateUserById,
 } from "@/services/GetUserService";
 import { useRouter } from "next/router";
@@ -56,6 +57,11 @@ export default function MyData() {
     setDesativarConta(!desativarConta);
   };
 
+  const [contagemStatus, setContagemStatus] = useState({
+    total_campanhas: 0,
+    total_lead: 0,
+  });
+
   const clickDesativarConta = async () => {
     const r = await deleteUserById(sessionStorage.getItem("idUser"));
     if (r) {
@@ -72,10 +78,7 @@ export default function MyData() {
   };
 
   function formatarTelefone(telefone: number | string) {
-    // Remove caracteres não numéricos
     const numeros = telefone.toString().replace(/\D/g, "");
-
-    // Aplica a formatação
     return numeros.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
   }
 
@@ -98,6 +101,13 @@ export default function MyData() {
       setCidade(user?.cidade || "");
       setEstado(user?.estado || "");
     }
+
+    async function fetchContagemStatus() {
+      const count = await getContagemStatus();
+      if (count) setContagemStatus(count);
+      console.log(count);
+    }
+    fetchContagemStatus();
     getUser();
   }, []);
 
@@ -201,10 +211,16 @@ export default function MyData() {
             </section>
           </section>
           <section className="flex gap-5 ">
-            <CardsMyData title="Leads" value="0">
+            <CardsMyData
+              title="Leads"
+              value={contagemStatus.total_lead.toString()}
+            >
               <MdKeyboardArrowUp className="text-green-500 text-5xl" />
             </CardsMyData>
-            <CardsMyData title="Campanhas" value="0">
+            <CardsMyData
+              title="Campanhas"
+              value={contagemStatus.total_campanhas.toString()}
+            >
               <MdKeyboardArrowDown className="text-red-500 text-5xl" />
             </CardsMyData>
             <CardsMyData title="Funil" value="0">
