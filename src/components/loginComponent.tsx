@@ -78,7 +78,7 @@ export default function LoginComponent() {
         }
 
         try {
-          if (admResponse === true) {
+          if (admResponse === "true") {
             router.push("/ADM/Dashboard");
           } else {
             router.push("/CLIENTE/DashboardClient");

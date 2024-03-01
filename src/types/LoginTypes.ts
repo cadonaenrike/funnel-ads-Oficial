@@ -12,7 +12,7 @@ export interface LoginResponse {
       nome: string;
       email: string;
       dfatores?: boolean;
-      isadmin: boolean;
+      isadmin: string;
     };
   };
   error?: string;
