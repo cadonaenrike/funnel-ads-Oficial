@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "hhttps://server-oqb147cum-softus.vercel.app/",
+  baseURL: "https://server-oqb147cum-softus.vercel.app/",
   // baseURL: "http://localhost:5000/",
   headers: {
     "content-type": "application/json",
