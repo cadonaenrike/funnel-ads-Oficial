@@ -36,6 +36,7 @@ export const getPastaById = async (id: string): Promise<Pasta> => {
 export const getPastaByIdUser = async (idUser: string): Promise<Pasta> => {
   try {
     const response = await api.get<Pasta>(`/getIdUserPasta/${idUser}`);
+    console.log(response);
     return response.data; // Assumindo que response.data é uma única Pasta
   } catch (error) {
     console.error("Erro ao obter pasta:", error);

@@ -36,6 +36,7 @@ export default function AddPaste() {
           return;
         }
         const pastasFromAPI = await getPastaByIdUser(useridcapturado);
+        console.log(pastasFromAPI);
 
         // Verifique se pastasFromAPI é um array, caso contrário, transforme-o em um
         const pastasArray = Array.isArray(pastasFromAPI)
