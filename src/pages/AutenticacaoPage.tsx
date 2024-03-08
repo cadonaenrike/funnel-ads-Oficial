@@ -90,7 +90,7 @@ export default function Home() {
           type="submit"
           className="w-full px-4 py-4 mt-4 rounded-3xl text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:shadow-outline"
         >
-          Verificar Código
+          Verificar Códig0
         </button>
       </form>
 
