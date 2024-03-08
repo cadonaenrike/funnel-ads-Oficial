@@ -12,7 +12,7 @@ export default function Home() {
     async function obterSegredo() {
       try {
         const resposta = await fetch(
-          "https://funnelads.vercel.app/autenticacao",
+          "https://server-oqb147cum-softus.vercel.app/autenticacao",
           {
             headers: {
               "api-key": "tpfTech",
@@ -33,7 +33,7 @@ export default function Home() {
     event.preventDefault();
     try {
       const resposta = await fetch(
-        "https://funnelads.vercel.app/autenticacao/verificar-codigo",
+        "https://server-oqb147cum-softus.vercel.app/autenticacao/verificar-codigo",
         {
           method: "POST",
           headers: {
