@@ -20,6 +20,7 @@ import {
 import { FaCogs, FaRegFileAlt } from "react-icons/fa";
 import { MdPhotoCamera } from "react-icons/md";
 import { useRouter } from "next/router";
+import { boolean } from "yup";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,8 +33,17 @@ function classNames(...classes: string[]) {
 
 export default function NavBar() {
   const router = useRouter();
+  const [isAdm, setIsAdm] = useState<boolean | null>(null);
 
-  const isAdm = sessionStorage.getItem("isAdm");
+  useEffect(() => {
+    const storedIsAdm = sessionStorage.getItem("isAdm");
+
+    if (storedIsAdm === "true" || storedIsAdm === "false") {
+      setIsAdm(storedIsAdm === "true");
+    } else {
+      setIsAdm(null);
+    }
+  }, []);
 
   const exitDashBoard = () => {
     sessionStorage.removeItem("user");
