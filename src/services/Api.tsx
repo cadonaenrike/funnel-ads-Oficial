@@ -6,8 +6,6 @@ const api = axios.create({
   headers: {
     "content-type": "application/json",
     "api-key": process.env.NEXT_PUBLIC_APYKEY,
-    "Access-Control-Allow-Origin":
-      "https://funnel-ads-oficial-sable.vercel.app",
   },
 });
 
