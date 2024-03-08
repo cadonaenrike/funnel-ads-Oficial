@@ -31,32 +31,9 @@ function classNames(...classes: string[]) {
 }
 
 export default function NavBar() {
-  const { setUser } = useGlobalContext();
-  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      const isAdm = sessionStorage.getItem("isAdm");
-      const idUser = sessionStorage.getItem("idUser");
-
-      if (isAdm === "true" && idUser) {
-        try {
-          const response = await getAdm(Number(idUser));
-          if (response && response.isadmin === true) {
-            setIsAdmin(true);
-          } else {
-            setIsAdmin(false);
-          }
-        } catch (error) {
-          console.error("Erro ao verificar o status de admin:", error);
-          setIsAdmin(false);
-        }
-      }
-    };
-
-    checkAdminStatus();
-  }, []);
+  const isAdm = sessionStorage.getItem("isAdm");
 
   const exitDashBoard = () => {
     sessionStorage.removeItem("user");
@@ -65,16 +42,9 @@ export default function NavBar() {
     router.push("/ADM/Dashboard");
   };
 
-  // const capitFirsLett = (str: string) => {
-  //   return str.charAt(0).toUpperCase() + str.slice(1);
-  // };
-
-  // const user: string | null = localStorage.getItem("user");
-  // const name: string = user ? capitFirsLett(user) : "";
-
   return (
     <>
-      {isAdmin ? (
+      {isAdm ? (
         /* Navbar para Administradores */
         <nav
           className={`bg-slate-800 border-gray-200 dark:bg-gray-900 dark:border-gray-700 py-2 max-h-16 shadow-sm ${poppins.className}`}
