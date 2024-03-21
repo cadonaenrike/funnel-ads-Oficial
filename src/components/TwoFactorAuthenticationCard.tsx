@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import { updateDfatores } from "@/services/dFatoresService";
 import { FaShieldHalved } from "react-icons/fa6";
 import { GetUserById } from "@/services/GetUserService";
+import { useRouter } from "next/router";
 
 const TwoFactorAuthenticationCard = () => {
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
-
+  const router = useRouter();
   useEffect(() => {
     const fetchUserData = async () => {
       const userData = await GetUserById();
@@ -20,6 +21,7 @@ const TwoFactorAuthenticationCard = () => {
 
   const toggle2FA = async () => {
     const success = await updateDfatores(!is2FAEnabled);
+
     if (success) {
       setIs2FAEnabled(!is2FAEnabled); // Atualiza o estado com o novo status de 2FA
       alert(
@@ -27,6 +29,9 @@ const TwoFactorAuthenticationCard = () => {
           ? "Autenticação em 2 fatores desabilitado com sucesso!"
           : "Autenticação em 2 fatores habilitado com sucesso!"
       );
+    }
+    if (is2FAEnabled === false) {
+      router.push("/Validation2Fatores");
     } else {
       alert("Falha ao alterar o status do 2FA.");
     }
