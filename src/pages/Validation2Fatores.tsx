@@ -6,8 +6,12 @@ export default function Home() {
   const [segredo, setSegredo] = useState<{ otpauth_url: string } | null>(null);
   const [codigo, setCodigo] = useState("");
   const [resultadoVerificacao, setResultadoVerificacao] = useState("");
-  const idusuario = sessionStorage.getItem("idUser");
+  const [idusuario, setIdusuario] = useState("");
   const router = useRouter();
+
+  if (typeof window !== "undefined") {
+    setIdusuario(sessionStorage.getItem("idUser")!);
+  }
 
   useEffect(() => {
     async function obterSegredo() {
