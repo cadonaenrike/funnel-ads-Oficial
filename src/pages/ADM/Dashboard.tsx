@@ -12,6 +12,7 @@ import { IoPerson, IoPeopleSharp } from "react-icons/io5";
 import CardsSubUsers from "@/components/CardsSubUsers";
 import LastClientsCard from "@/components/cardLastClient";
 import CardHelps from "@/components/cardHelps";
+import CardUsuarios from "@/components/cardUsuarios";
 
 export default function Dashboard() {
   useAdminCheck();
@@ -39,7 +40,11 @@ export default function Dashboard() {
           <Graphics types="bar" />
         </Cardsgraphic>
 
+  
+
         <LastClientsCard title="Últimos Clientes" />
+
+              <CardUsuarios title="Últimos Clientes" />
 
         <CardHelps title="Suporte ao Cliente" />
       </section>

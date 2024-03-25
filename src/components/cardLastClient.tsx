@@ -26,28 +26,35 @@ const LastClientsCard: React.FC<LastClientsCardProps> = ({ title }) => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center rounded-md bg-white w-96 text-slate-800 p-5 shadow-lg gap-3">
+    <div className="flex flex-col items-center rounded-md bg-white w-96 text-slate-800 p-5 shadow-lg h-[325px] relative">
       <h2 className="text-lg">{title}</h2>
-      {lastClientsData.map((client, index) => (
-        <section
-          key={index}
-          className="flex gap-5 my-3 border-2 p-5 rounded-2xl shadow-lg "
-        >
-          <FaUser className="text-5xl rounded-lg" />
-          <section>
-            <p>{client.nome}</p>
-            <span className="text-xs">{client.cargo}</span>
-          </section>
-        </section>
-      ))}
+      <div className="w-full overflow-y-auto">
+        {lastClientsData.map((client, index) => (
+          <>
+            <section
+              key={index}
+              className="flex gap-5 my-5 border-2 p-4 rounded-2xl shadow-lg w-full"
+            >
+              <FaUser className="text-5xl rounded-lg" />
+              <section>
+                <p>{client.nome}</p>
+                <span className="text-xs">{client.cargo}</span>
+              </section>
+            </section>
+           
+          </>
+        ))}
+      </div>
       {lastClientsData.length > 0 && (
-        <Link
-          href="/ADM/ADMUserList"
-          passHref
-          className="flex items-center w-full justify-end text-sm"
-        >
-          Ver todos <FaChevronRight className="text-sm" />
-        </Link>
+        <div className="bg-white p-3">
+          <Link
+            href="/ADM/ADMUserList"
+            passHref
+            className="flex items-center w-full justify-end text-sm absolute bottom-3 right-3"
+          >
+            Ver todos <FaChevronRight className="text-sm" />
+          </Link>
+        </div>
       )}
     </div>
   );

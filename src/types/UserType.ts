@@ -21,6 +21,7 @@ export interface UserTypes {
   cidade?: string; // Adicionado campo para cidade
   estado?: string; // Adicionado campo para estado
   dfatores?: boolean;
+  cargo?: string
 }
 
 export function converterUsuario(apiUsuario: any): UserTypes {
