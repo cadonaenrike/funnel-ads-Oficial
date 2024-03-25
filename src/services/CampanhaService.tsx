@@ -28,6 +28,17 @@ export const getCampanhas = async (): Promise<Campanha[]> => {
     throw error;
   }
 };
+export const getCampanhasIdUser = async (
+  idUser: string
+): Promise<Campanha[]> => {
+  try {
+    const response = await api.get<Campanha[]>(`/getCampanhasIdUser/${idUser}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao obter campanhas:", error);
+    throw error;
+  }
+};
 export const getCampanhasById = async (
   idPasta: string
 ): Promise<Campanha[]> => {

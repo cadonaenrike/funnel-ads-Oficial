@@ -49,7 +49,7 @@ export default function CardsLeads({
       </section>
       {showLink && (
         <Link
-          href="/RelacaoDeLeads-Client"
+          href="/CLIENTE/RelacaoDeLeads-Client"
           passHref
           className="flex items-center w-full justify-end text-sm"
         >

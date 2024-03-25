@@ -4,13 +4,50 @@ import NavBar from "@/components/navBar";
 import { useRouter } from "next/router";
 import { FaCirclePlus } from "react-icons/fa6";
 import { IoMdHelpBuoy } from "react-icons/io";
+import { useEffect, useState } from "react";
+import { getAllHelps, deleteHelp } from "@/services/HelpService";
+import { HelpType } from "@/types/HelpType";
 
 export default function Help() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [helps, setHelps] = useState<HelpType[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const helpData = await getAllHelps();
+        setHelps(helpData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao obter dados de ajuda:", error);
+      }
+    }
+    fetchData();
+  }, []);
 
   const handleClick = () => {
-    router.push("/ADMEditHelp");
+    router.push("/ADM/EditHelp");
   };
+
+  const handleDelete = async (id: string) => {
+    if (deleteLoading) return;
+    setDeleteLoading(true);
+    try {
+      await deleteHelp(id);
+      setDeleteLoading(false);
+      const updatedHelps = helps.filter(
+        (help) => help.id?.toString() !== id.toString()
+      );
+      setHelps(updatedHelps);
+      console.log("Ajuda excluída com sucesso");
+    } catch (error) {
+      console.error("Erro ao excluir ajuda:", error);
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -31,115 +68,88 @@ export default function Help() {
             Tópico
           </button>
         </div>
-        <div className="relative overflow-x-auto mt-5 sm:rounded-sm border-2 w-full">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="px-5 py-3 w-auto font-bold">
-                  ID
-                </th>
-                <th scope="col" className="px-5 py-3 w-auto font-bold">
-                  Categoria
-                </th>
-                <th scope="col" className="px-10 py-3 w-auto font-bold">
-                  Tópico
-                </th>
-                <th scope="col" className="px-10 py-3 w-auto font-bold">
-                  Texto
-                </th>
-                <th scope="col" className=" px-10 py-3 w-auto font-bold">
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  673213
-                </th>
-
-                <td className="px-5 py-2">Funil</td>
-                <td className="px-5 py-2">Como criar Funil123</td>
-                <td className="px-5 py-2">Aqui vai texto de ajuda</td>
-                <td className="flex items-center px-5 py-2">
-                  <button type="button" className="text-white m-5">
-                    <img src="/icons/icon-edit-button.svg" />
-                  </button>
-                  <button type="button" className="text-white">
-                    <img src="/icons/icon-delete-button.svg" />
-                  </button>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  021987
-                </th>
-
-                <td className="px-5 py-2">Funil</td>
-                <td className="px-5 py-2">Como criar Funil</td>
-                <td className="px-5 py-2">Aqui vai texto de ajuda</td>
-                <td className="flex items-center px-5 py-2">
-                  <button type="button" className="text-white m-5">
-                    <img src="/icons/icon-edit-button.svg" />
-                  </button>
-                  <button type="button" className="text-white">
-                    <img src="/icons/icon-delete-button.svg" />
-                  </button>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  695647
-                </th>
-
-                <td className="px-5 py-2">Gatilhos</td>
-                <td className="px-5 py-2">Como criar Gatilho com TIMER</td>
-                <td className="px-5 py-2">Aqui va ajuda </td>
-                <td className="flex items-center px-5 py-2">
-                  <button type="button" className="text-white m-5">
-                    <img src="/icons/icon-edit-button.svg" />
-                  </button>
-                  <button type="button" className="text-white">
-                    <img src="/icons/icon-delete-button.svg" />
-                  </button>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  472007
-                </th>
-
-                <td className="px-5 py-2">Funções, Gatilhos</td>
-                <td className="px-5 py-2">
-                  Como criar Função com Disparo de SMS
-                </td>
-                <td className="px-5 py-2">
-                  Aqui vai a ajuda do disparo de SMS
-                </td>
-                <td className="flex items-center px-5 py-2">
-                  <button type="button" className="text-white m-5">
-                    <img src="/icons/icon-edit-button.svg" />
-                  </button>
-                  <button type="button" className="text-white">
-                    <img src="/icons/icon-delete-button.svg" />
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {loading ? (
+          <span className="loader blue-loader mt-10"></span>
+        ) : (
+          <div className="relative overflow-x-auto mt-5 sm:rounded-sm border-2 w-full">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-5 py-3 w-auto font-bold">
+                    ID
+                  </th>
+                  <th scope="col" className="px-5 py-3 w-auto font-bold">
+                    Categoria
+                  </th>
+                  <th scope="col" className="px-10 py-3 w-auto font-bold">
+                    Tópico
+                  </th>
+                  <th scope="col" className="px-10 py-3 w-auto font-bold">
+                    Texto
+                  </th>
+                  <th scope="col" className=" px-10 py-3 w-auto font-bold">
+                    Ações
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {helps &&
+                  helps.map((help, index) => (
+                    <tr
+                      key={index}
+                      className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                    >
+                      <th
+                        scope="row"
+                        className="px-5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        {help.id}
+                      </th>
+                      <td className="px-5 py-2">
+                        {help.data?.categorias.join(", ")}
+                      </td>
+                      <td className="px-5 py-2">{help.data?.topico}</td>
+                      <td className="px-5 py-2">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: help.data?.descrição || "",
+                          }}
+                        />
+                      </td>
+                      <td className="flex items-center px-5 py-2">
+                        <button
+                          onClick={() =>
+                            router.push(
+                              `/ADM/EditHelp?id=${
+                                help.id
+                              }&topico=${encodeURIComponent(
+                                help.data?.topico || ""
+                              )}&categorias=${help.data?.categorias.join(
+                                ","
+                              )}&descricao=${encodeURIComponent(
+                                help.data?.descrição || ""
+                              )}`
+                            )
+                          }
+                          type="button"
+                          className="text-white m-5"
+                        >
+                          <img src="/icons/icon-edit-button.svg" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(help.id!)}
+                          type="button"
+                          className="text-white"
+                        >
+                          <img src="/icons/icon-delete-button.svg" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
     </>
   );

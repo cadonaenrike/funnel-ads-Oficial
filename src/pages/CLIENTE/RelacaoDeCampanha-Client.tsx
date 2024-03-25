@@ -3,9 +3,7 @@ import NavBar from "@/components/navBar";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   FaCirclePlus,
-  FaCircleXmark,
   FaFlagCheckered,
-  FaFloppyDisk,
   FaFolderOpen,
   FaRegFolderOpen,
   FaRegPenToSquare,
@@ -16,7 +14,6 @@ import { getPastaById } from "@/services/PastaService";
 import {
   addCampanhaToPasta,
   deleteCampanha,
-  getCampanhas,
   getCampanhasById,
 } from "@/services/CampanhaService";
 import { Pasta, Campanha } from "@/types/PasteTypes";
@@ -58,8 +55,17 @@ export default function AddPaste() {
     e.preventDefault();
     const pastaId = sessionStorage.getItem("pasta_id");
     if (!pastaId || !novaCampanhaNome.trim()) return;
-
-    await addCampanhaToPasta(pastaId, { name: novaCampanhaNome, funis: [] });
+    const useridcapturado = sessionStorage.getItem("idUser");
+    if (!useridcapturado) {
+      alert("Não possui usuário logado");
+      router.push("/Login");
+      return;
+    }
+    await addCampanhaToPasta(pastaId, {
+      name: novaCampanhaNome,
+      userid: useridcapturado,
+      funis: [],
+    });
     const updatedCampanhas = await getCampanhasById(pastaId);
     setCampanhas(updatedCampanhas);
     setNovaCampanhaNome("");
@@ -67,7 +73,7 @@ export default function AddPaste() {
   };
 
   const editCampanha = () => {
-    router.push("/Campanha-Client");
+    router.push("/CLIENTE/Campanha-Client");
   };
 
   const handleDeleteClick = async (campanhaId: string) => {
@@ -88,7 +94,7 @@ export default function AddPaste() {
         <h1 className="font-semibold text-2xl ml-2">Pasta: {pasta?.name}</h1>
       </section>
 
-      <div className="flex justify-end px-28 ">
+      <div className="flex justify-end px-28 mr-52 ">
         <button
           onClick={() => setShowModal(true)}
           className="bg-amber-500 h-12 px-12 py-2 rounded-lg text-white font-semibold flex flex-row gap-2 items-center"

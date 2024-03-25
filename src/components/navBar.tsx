@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/globalContext/userAdmin";
-import { fetchUserData, getAdm } from "@/services/GetUser";
+import { fetchUserData, getAdm } from "@/services/GetUserService";
 import { Menu, Transition } from "@headlessui/react";
 import { Poppins } from "next/font/google";
 import Image from "next/image";
@@ -15,10 +15,12 @@ import {
   FaCircleUser,
   FaFilter,
   FaRegAddressCard,
+  FaPager,
 } from "react-icons/fa6";
 import { FaCogs, FaRegFileAlt } from "react-icons/fa";
 import { MdPhotoCamera } from "react-icons/md";
 import { useRouter } from "next/router";
+import { boolean } from "yup";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -30,31 +32,17 @@ function classNames(...classes: string[]) {
 }
 
 export default function NavBar() {
-  const { setUser } = useGlobalContext();
-  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
+  const [isAdm, setIsAdm] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const checkAdminStatus = async () => {
-      const isAdm = sessionStorage.getItem("isAdm");
-      const idUser = sessionStorage.getItem("idUser");
+    const storedIsAdm = sessionStorage.getItem("isAdm");
 
-      if (isAdm === "true" && idUser) {
-        try {
-          const response = await getAdm(Number(idUser));
-          if (response && response.status === 200) {
-            setIsAdmin(true);
-          } else {
-            setIsAdmin(false);
-          }
-        } catch (error) {
-          console.error("Erro ao verificar o status de admin:", error);
-          setIsAdmin(false);
-        }
-      }
-    };
-
-    checkAdminStatus();
+    if (storedIsAdm === "true" || storedIsAdm === "false") {
+      setIsAdm(storedIsAdm === "true");
+    } else {
+      setIsAdm(null);
+    }
   }, []);
 
   const exitDashBoard = () => {
@@ -64,16 +52,9 @@ export default function NavBar() {
     router.push("/ADM/Dashboard");
   };
 
-  // const capitFirsLett = (str: string) => {
-  //   return str.charAt(0).toUpperCase() + str.slice(1);
-  // };
-
-  // const user: string | null = localStorage.getItem("user");
-  // const name: string = user ? capitFirsLett(user) : "";
-
   return (
     <>
-      {isAdmin ? (
+      {isAdm ? (
         /* Navbar para Administradores */
         <nav
           className={`bg-slate-800 border-gray-200 dark:bg-gray-900 dark:border-gray-700 py-2 max-h-16 shadow-sm ${poppins.className}`}
@@ -88,7 +69,7 @@ export default function NavBar() {
             />
 
             <Link
-              href="/Dashboard"
+              href="/ADM/Dashboard"
               className="inline-flex items-center gap-x-1.5 text-white font-medium text-sm px-3 py-2 hover:text-cyan-600"
             >
               {" "}
@@ -132,7 +113,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/ADMRelatoConsuClie"
+                          href="ADMRelatoConsuClie"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -148,7 +129,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/CadNewPlan"
+                          href="Plans"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -164,7 +145,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/ADMRelatofaturamento"
+                          href="ADMRelatofaturamento"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -180,7 +161,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/ADMUserList"
+                          href="ADMUserList"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -219,7 +200,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/CadNewUser"
+                          href="CadNewUser"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -235,7 +216,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/CadNewPlan"
+                          href="Plans"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -251,7 +232,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/Help"
+                          href="Help"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -268,14 +249,6 @@ export default function NavBar() {
                 </Menu.Items>
               </Transition>
             </Menu>
-
-            <Link
-              onClick={exitDashBoard}
-              href="/Login"
-              className="inline-flex items-center px-3 py-2 text-white font-medium text-sm hover:text-cyan-600"
-            >
-              <FaArrowRightFromBracket className=" h-5 w-5 mr-3" /> Sair
-            </Link>
 
             <Menu as="div" className={"relative inline-block text-left"}>
               <div>
@@ -297,7 +270,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/MyProfile"
+                          href="MyProfile"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -350,7 +323,7 @@ export default function NavBar() {
             />
 
             <Link
-              href="/DashboardClient"
+              href="/CLIENTE/DashboardClient"
               className="inline-flex items-center gap-x-1.5 text-white font-medium text-sm px-3 py-2 hover:text-cyan-600"
             >
               <FaDesktop className=" h-5 w-5 mr-3" /> Dashboard
@@ -407,27 +380,21 @@ export default function NavBar() {
                         </Link>
                       )}
                     </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <Link
-                          target="_blank"
-                          href="https://visual-editor-eight.vercel.app"
-                          className={classNames(
-                            active
-                              ? "bg-slate-800 text-cyan-600"
-                              : "text-white",
-                            "flex px-4 py-2 text-sm items-center gap-2"
-                          )}
-                        >
-                          <FaChevronRight />
-                          Landing Page
-                        </Link>
-                      )}
-                    </Menu.Item>
                   </div>
                 </Menu.Items>
               </Transition>
             </Menu>
+            <Link
+              target="_blank"
+              href="https://visual-editor-eight.vercel.app"
+              className={classNames(
+                "text-white",
+                "flex px-4 py-2 text-sm items-center gap-2"
+              )}
+            >
+              <FaPager />
+              Landing Page
+            </Link>
             <Menu as="div" className={"relative inline-block text-left"}>
               <div>
                 <Menu.Button className="inline-flex w-full justify-center items-center gap-x-1.5 border-none bg-transparent px-3 py-2 font-medium text-sm text-white hover:text-cyan-600">
@@ -465,7 +432,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/RelacaoDeLeads-Client"
+                          href="/CLIENTE/RelacaoDeLeads-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -504,7 +471,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/RelacaoDeLeads-Client"
+                          href="/CLIENTE/RelacaoDeLeads-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -520,7 +487,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/RelacaoDeTags-Client"
+                          href="/CLIENTE/RelacaoDeTags-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -536,7 +503,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/RelacaoDePasta-Client"
+                          href="/CLIENTE/RelacaoDePasta-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -552,7 +519,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/Campanha-Client"
+                          href="/CLIENTE/Campanha-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -568,7 +535,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/Usuario-Client"
+                          href="/CLIENTE/Usuario-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -585,15 +552,6 @@ export default function NavBar() {
                 </Menu.Items>
               </Transition>
             </Menu>
-
-            <Link
-              onClick={exitDashBoard}
-              href="/Login"
-              className="inline-flex items-center px-3 py-2 text-white font-medium text-sm hover:text-cyan-600"
-            >
-              {" "}
-              <FaArrowRightFromBracket className=" h-5 w-5 mr-3" /> Sair
-            </Link>
 
             <Menu as="div" className={"relative inline-block text-left"}>
               <div>
@@ -618,7 +576,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/MyData"
+                          href="/CLIENTE/MyData"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -631,26 +589,11 @@ export default function NavBar() {
                         </Link>
                       )}
                     </Menu.Item>
+
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/MyData"
-                          className={classNames(
-                            active
-                              ? "bg-slate-800 text-cyan-600"
-                              : "text-white",
-                            "flex px-4 py-2 text-sm items-center gap-2"
-                          )}
-                        >
-                          <FaRegAddressCard />
-                          Minha Conta
-                        </Link>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <Link
-                          href="/Faturas"
+                          href="/CLIENTE/Faturas"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"
@@ -666,7 +609,7 @@ export default function NavBar() {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href="/Configuracao-Client"
+                          href="/CLIENTE/Configuracao-Client"
                           className={classNames(
                             active
                               ? "bg-slate-800 text-cyan-600"

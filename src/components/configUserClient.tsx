@@ -1,7 +1,22 @@
+import React, { useEffect, useState } from "react";
 import { FaEllipsisV } from "react-icons/fa";
 import ToggleSwitch from "./toogleSwitch";
+import { getSubUsers } from "@/services/SubUsersService";
+import { SubUser } from "@/types/SubUsersTypes";
 
 export default function ConfigUserClient() {
+  const [subUsers, setSubUsers] = useState<SubUser[]>([]);
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      const data = await getSubUsers();
+      if (data) {
+        setSubUsers(data);
+      }
+    };
+
+    fetchUsuarios();
+  }, []);
+
   return (
     <table className="min-w-full text-left text-sm font-light">
       <thead className="border-b dark:border-neutral-500">
@@ -30,127 +45,50 @@ export default function ConfigUserClient() {
           <th scope="col" className="w-4 py-4 font-normal">
             Configurações
           </th>
-          <th scope="col" className="w-4 py-4 font-normal">
-            Bate-papo
-          </th>
           <th scope="col" className="w-4 py-4 font-normal"></th>
         </tr>
       </thead>
       <tbody>
-        <tr className="border-b dark:border-neutral-500">
-          <td className="whitespace-nowrap py-4 font-medium">
-            <section className="flex flex-col items-center">
-              <p>Emanoel</p>
-              <span className="text-primary">emanoel@emanoel.com</span>
-            </section>
-          </td>
-          <td className="whitespace-nowrap py-6 ">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap pl-3 py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap pl-3  py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-4">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-6 pl-5 flex">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-4">
-            <FaEllipsisV
-              className="hover:text-primary hover:cursor-pointer"
-              size={20}
-            />
-          </td>
-        </tr>
-        <tr className="border-b dark:border-neutral-500">
-          <td className="whitespace-nowrap px-6 py-4 font-medium">
-            <section className="flex flex-col items-center">
-              <p>Everton</p>
-              <span className="text-primary">everton@everton.com</span>
-            </section>
-          </td>
-          <td className="whitespace-nowrap py-6 ">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap pl-3 py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap pl-3  py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-4">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-6 pl-5 flex">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-4">
-            <FaEllipsisV
-              className="hover:text-primary hover:cursor-pointer"
-              size={20}
-            />
-          </td>
-        </tr>
-        <tr className="border-b dark:border-neutral-500">
-          <td className="whitespace-nowrap px-6 py-4 font-medium">
-            <section className="flex flex-col items-center">
-              <p>Paola</p>
-              <span className="text-primary">paola@paola.com</span>
-            </section>
-          </td>
-          <td className="whitespace-nowrap py-6 ">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap pl-3 py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap pl-3  py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-4">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-6 pl-5 flex">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-6">
-            <ToggleSwitch />
-          </td>
-          <td className="whitespace-nowrap  py-4">
-            <FaEllipsisV
-              className="hover:text-primary hover:cursor-pointer"
-              size={20}
-            />
-          </td>
-        </tr>
+        {subUsers.map((user, index) => (
+          <tr key={index} className="border-b dark:border-neutral-500">
+            <td className="whitespace-nowrap py-4 font-medium">
+              <section className="flex flex-col items-center">
+                <p>{user.nome}</p>{" "}
+                {/* Ajuste conforme o nome da propriedade do seu subusuário */}
+                <span className="text-primary">{user.email}</span>{" "}
+                {/* Ajuste conforme o nome da propriedade do seu subusuário */}
+              </section>
+            </td>
+            <td className="whitespace-nowrap py-6">
+              <ToggleSwitch />
+            </td>
+            <td className="whitespace-nowrap py-6">
+              <ToggleSwitch />
+            </td>
+            <td className="whitespace-nowrap pl-3 py-6">
+              <ToggleSwitch />
+            </td>
+            <td className="whitespace-nowrap pl-3 py-6">
+              <ToggleSwitch />
+            </td>
+            <td className="whitespace-nowrap py-4">
+              <ToggleSwitch />
+            </td>
+            <td className="whitespace-nowrap py-6">
+              <ToggleSwitch />
+            </td>
+            <td className="whitespace-nowrap py-6 pl-5 flex">
+              <ToggleSwitch />
+            </td>
+
+            <td className="whitespace-nowrap py-4">
+              <FaEllipsisV
+                className="hover:text-primary hover:cursor-pointer"
+                size={20}
+              />
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

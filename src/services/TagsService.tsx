@@ -2,9 +2,9 @@ import { TagsType } from "@/types/TagsType";
 import api from "./Api";
 
 // Adicionar uma nova tag
-export const addTag = async (nome: string): Promise<TagsType> => {
+export const addTag = async (name: string): Promise<TagsType> => {
   try {
-    const response = await api.post<TagsType>("/postTags", { nome }); // Ajuste na URL
+    const response = await api.post<TagsType>("/postTags", { name });
     return response.data;
   } catch (error) {
     console.error("Erro ao adicionar tag:", error);

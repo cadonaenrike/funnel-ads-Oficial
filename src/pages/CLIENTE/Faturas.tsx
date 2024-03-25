@@ -3,58 +3,101 @@ import NavBar from "@/components/navBar";
 import { FaRegFileAlt } from "react-icons/fa";
 import { CiCreditCard1 } from "react-icons/ci";
 import { IoEyeSharp } from "react-icons/io5";
-import { FaturasData, Invoice, statusColors } from "@/types/InvoiceTypes";
+import { Invoice, statusColors } from "@/types/InvoiceTypes";
+import {
+  getCustomerIdByCpf,
+  getInvoicesByUserId,
+} from "@/services/FaturasService";
+import { GetUserById } from "@/services/GetUserService";
 
 export default function ADMRelatoFaturamento() {
-  const cpf = "03653708001";
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [userId, setUserId] = useState<string>("");
+  const [cpf, setCpf] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const handlePaymentLinkClick = (Href: string) => {
     window.open(Href, "_blank");
   };
-  useEffect(() => {
-    const getIdPorCpf = async () => {
-      try {
-        const response = await fetch(
-          `https://serve-qm5b.vercel.app/assasUser/customers/${cpf}`
-        );
 
-        if (response.ok) {
-          const invoicesData: FaturasData = await response.json();
-          console.log(invoicesData);
-          setUserId(invoicesData.data[0].id);
+  useEffect(() => {
+    const fetchCustomerData = async () => {
+      setLoading(true);
+      try {
+        const getUser = await GetUserById();
+        if (getUser?.cpf) {
+          const userId = await getCustomerIdByCpf(getUser.cpf);
+          setUserId(userId);
+          setCpf(getUser.cpf);
         } else {
-          console.error("Erro ao buscar Id:", response.statusText);
+          setCpf(null);
         }
       } catch (error) {
         console.error("Erro ao buscar Id:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    getIdPorCpf();
-  }, [cpf]);
+    fetchCustomerData();
+  }, []);
 
   useEffect(() => {
-    const getFaturas = async () => {
-      try {
-        const faturasResponse = await fetch(
-          `https://serve-qm5b.vercel.app/assasFatura/payments/customer/${userId}`
-        );
+    const fetchInvoices = async () => {
+      if (!userId) return;
 
-        if (faturasResponse.ok) {
-          const faturasData: FaturasData = await faturasResponse.json();
-          console.log(faturasData);
-          setInvoices(faturasData.data);
-        } else {
-          console.error("Erro ao buscar faturas:", faturasResponse.statusText);
-        }
+      try {
+        const fetchedInvoices = await getInvoicesByUserId(userId);
+        setInvoices(fetchedInvoices);
       } catch (error) {
         console.error("Erro ao buscar faturas:", error);
       }
     };
 
-    getFaturas();
+    if (userId) {
+      fetchInvoices();
+    }
   }, [userId]);
+
+  if (loading) {
+    return (
+      <>
+        <NavBar />
+        <section className="flex max-w-screen-xl mx-auto text-sky-950 text-2xl mt-10 mb-5">
+          <FaRegFileAlt />
+          <h1 className="ml-2 font-semibold">Faturas</h1>
+        </section>
+
+        <section className="bg-white max-w-screen-xl mt-5 mx-auto flex flex-col p-5 rounded-lg shadow-lg">
+          <h1 className="font-semibold text-2xl ml-2">Histórico de faturas</h1>
+
+          <div className="relative overflow-x-auto mt-5 sm:rounded-sm border-2">
+            <div>Carregando...</div>;
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  if (cpf === null) {
+    return (
+      <>
+        <NavBar />
+        <section className="flex max-w-screen-xl mx-auto text-sky-950 text-2xl mt-10 mb-5">
+          <FaRegFileAlt />
+          <h1 className="ml-2 font-semibold">Faturas</h1>
+        </section>
+
+        <section className="bg-white max-w-screen-xl mt-5 mx-auto flex flex-col p-5 rounded-lg shadow-lg">
+          <h1 className="font-semibold text-2xl ml-2">Histórico de faturas</h1>
+
+          <div className="relative overflow-x-auto mt-5 sm:rounded-sm border-2 p-4 justify-center">
+            Voce não possui faturas!!
+          </div>
+        </section>
+      </>
+    );
+  }
 
   return (
     <>

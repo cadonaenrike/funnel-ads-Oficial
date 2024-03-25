@@ -5,7 +5,9 @@ import { useRouter } from "next/router";
 import * as yup from "yup";
 import Link from "next/link";
 import { LoginService } from "@/services/LoginService";
-import { getAdm } from "@/services/GetUser";
+import { getAdm } from "@/services/GetUserService";
+import { MdError } from "react-icons/md";
+import ErrorAlert from "./errorAlert";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -21,7 +23,9 @@ export default function LoginComponent() {
   const [emailValid, setEmailValid] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleEmail = async (e: any) => {
     setEmail(e.target.value);
@@ -41,50 +45,55 @@ export default function LoginComponent() {
   };
 
   const logar = async () => {
+    // Resetando mensagens de erro a cada tentativa de login
+    setError("");
+
     if (email === "") {
-      confirm("Favor digite um email válido");
+      setError("Favor digite um email válido");
       return;
     } else if (senha === "") {
-      confirm("Favor digite uma senha válida");
+      setError("Favor digite uma senha válida");
       return;
     }
 
     try {
+      setLoading(true);
       const response = await LoginService.login({ email, senha });
+      sessionStorage.setItem("isAdm", `${response?.data.user.isadmin}`);
+      setLoading(false);
 
-      if (response) {
-        if (response.status === 200) {
-          // Supondo que o ID do usuário esteja disponível na resposta do login
-          const userId = response.data.user.id;
+      if (response && response.status === 200) {
+        const admResponse = response.data.user.isadmin;
+        const userId = response.data.user.id;
+        localStorage.setItem("isAdm", `${admResponse}`);
+        sessionStorage.setItem("isAdm", `${admResponse}`);
 
-          try {
-            const admResponse = await getAdm(userId);
-            if (admResponse) {
-              // Armazena 'true' como string porque sessionStorage só armazena strings
-              sessionStorage.setItem("isAdm", "true");
-              sessionStorage.setItem("idUser", `${userId}`);
-              // Redireciona para a dashboard do administrador
-              router.push("/ADM/Dashboard");
-            } else {
-              // Se não houver erro, mas o usuário não for encontrado como adm, considera não adm
-              sessionStorage.setItem("isAdm", "false");
-              sessionStorage.setItem("idUser", `${userId}`);
-              // Redireciona para a dashboard do cliente
-              router.push("/CLIENTE/DashboardClient");
-            }
-          } catch (error) {
-            console.error(`Erro ao verificar status de administrador:`, error);
-            // Em caso de erro na verificação, considera que não é adm por segurança
-            sessionStorage.setItem("isAdm", "false");
+        sessionStorage.setItem("idUser", `${userId}`);
+
+        if (response.data.user.dfatores === true) {
+          router.push("/AutenticacaoPage");
+          return;
+        }
+
+        console.log(admResponse);
+
+        try {
+          if (admResponse) {
+            router.push("/ADM/Dashboard");
+          } else {
+            router.push("/CLIENTE/DashboardClient");
           }
-        } else {
-          alert("E-mail ou senha inválidos");
+        } catch (error) {
+          setError(`Erro ao verificar status de administrador: ${error}`);
         }
       } else {
-        console.error("Falha ao receber a resposta do servidor");
+        setError("E-mail ou senha inválidos");
+        router.push("/Login");
       }
     } catch (error) {
       console.error("Erro ao tentar logar", error);
+      setError("Falha ao receber a resposta do servidor");
+      setLoading(false);
     }
   };
 
@@ -128,12 +137,14 @@ export default function LoginComponent() {
         <p className="text-red-500 text-sm">{emailError}</p>
       )}
       <Button
+        loading={loading}
         image="/icons/icon-login-button.svg"
         onClickFunction={logar}
         className="mt-4"
       >
         Login
       </Button>
+      {error && <ErrorAlert text={error} />}
       <Link
         className=" text-base font-medium m-0 mt-5 text-black hover:text-sky-500"
         href={"/RecoverPassword"}
