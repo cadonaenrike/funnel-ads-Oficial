@@ -11,11 +11,13 @@ import {
   updateCampanha,
 } from "@/services/CampanhaService";
 import { useRouter } from "next/router";
+import { getFunis } from "@/services/FunisService";
 
 export default function AddCampanha() {
   const [nomeCampanha, setNomeCampanha] = useState("");
   const [campanhas, setCampanhas] = useState<Campanha[]>([]);
   const [editCampanhaId, setEditCampanhaId] = useState<string | null>(null);
+  const [funis, setFunis] = useState<any>()
   const router = useRouter();
 
   useEffect(() => {
@@ -30,6 +32,12 @@ export default function AddCampanha() {
       setCampanhas(fetchedCampanhas);
     };
 
+    const fetchFunis = async () => {
+      const fetchedCampanhas = await getFunis(useridcapturado);
+      setFunis(fetchedCampanhas);
+    };
+
+   
     fetchCampanhas();
   }, []);
 
@@ -141,6 +149,10 @@ export default function AddCampanha() {
               ))}
             </tbody>
           </table>
+        </div>
+        <h1 className="font-semibold text-2xl ml-2 mt-5">Funis:</h1>
+        <div>
+
         </div>
       </section>
     </>

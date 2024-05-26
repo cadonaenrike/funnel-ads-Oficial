@@ -30,6 +30,8 @@ import {
   updateUserById,
 } from "@/services/GetUserService";
 import { useRouter } from "next/router";
+import z_api from "@/services/Z-APi";
+import WhatsappConnect from "@/pages/CLIENTE/WhatsappConnect";
 
 export default function MyData() {
   const [foto, setFoto] = useState<File | null>(null);
@@ -51,6 +53,8 @@ export default function MyData() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [desativarConta, setDesativarConta] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [whatsappConnection, setWhatsappConnection] = useState<boolean>();
+  const [whatsappModal, setWhatsappModal] = useState(false);
   const router = useRouter();
 
   const handleDesativarConta = () => {
@@ -82,6 +86,22 @@ export default function MyData() {
     return numeros.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
   }
 
+  async function getWathsappStatus() {
+    const result = await z_api.get("/status");
+    if (result.data.connected) {
+      setWhatsappConnection(result.data.smartphoneConnected);
+    } else setWhatsappConnection(false);
+    console.log(result);
+    
+  }
+
+  async function disconnectWhatsapp() {
+    const result = await z_api.get("/disconnect");
+    if (result.data.value) {
+      setWhatsappConnection(false);
+    } 
+  }
+
   useEffect(() => {
     async function getUser() {
       const user = await GetUserById();
@@ -107,8 +127,10 @@ export default function MyData() {
       if (count) setContagemStatus(count);
       console.log(count);
     }
+
     fetchContagemStatus();
     getUser();
+    getWathsappStatus();
   }, []);
 
   const handleCadastro = (e: FormEvent) => {
@@ -444,6 +466,37 @@ export default function MyData() {
               className="rounded-lg bg-gray-100 focus:bg-gray-200 focus:outline-none pl-2 h-11 w-9/12"
             />
           </section>
+          <section className="flex items-center w-full justify-between">
+            <label htmlFor="estado">Whatsapp:</label>
+            <div className="rounded-lg  pl-2 h-11 w-9/12">
+              {!whatsappConnection ? (
+                <button
+                  onClick={() => setWhatsappModal(true)}
+                  type="button"
+                  className="hover:bg-cyan-600 font-semibold text-white bg-sky-900 px-4 py-2 rounded"
+                >
+                  Conectar
+                </button>
+              ) : (
+                <>
+                  <button
+                    disabled
+                    type="button"
+                    className="font-semibold text-white bg-green-900 px-4 py-2 rounded"
+                  >
+                    Status: Conectado
+                  </button>
+                  <button
+                    onClick={disconnectWhatsapp}
+                    type="button"
+                    className="hover:bg-red-600 font-semibold text-white bg-red-900 px-4 py-2 rounded ms-2"
+                  >
+                    Desconectar
+                  </button>
+                </>
+              )}
+            </div>
+          </section>
           <hr />
           <div
             style={{
@@ -551,6 +604,16 @@ export default function MyData() {
           </button>
         </div>
       </section>
+
+      <WhatsappConnect
+        open={whatsappModal}
+        onClose={(success?: boolean) => {
+          setWhatsappModal(false);
+          if (success) {
+            setWhatsappConnection(true);
+          }
+        }}
+      />
     </>
   );
 }
