@@ -8,9 +8,16 @@ import {
   FaRegTrashCan,
 } from "react-icons/fa6";
 import NavBar from "@/components/navBar";
-import { addPasta, getAllPastas, deletePasta } from "@/services/PastaService";
+import {
+  addPasta,
+  getAllPastas,
+  deletePasta,
+  getPastaByIdUser,
+} from "@/services/PastaService";
+import { getCampanhasById } from "@/services/CampanhaService"; // Importe o método getCampanhasById
 import { Pasta, Campanha, Funil } from "@/types/PasteTypes";
 import { useRouter } from "next/router";
+import { v4 as uuidv4 } from "uuid";
 
 export default function AddPaste() {
   const [pastas, setPastas] = useState<Pasta[]>([]);
@@ -22,22 +29,41 @@ export default function AddPaste() {
   useEffect(() => {
     const loadPastasFromLocalStorage = async () => {
       try {
-        const pastasFromAPI = await getAllPastas();
-        setPastas(pastasFromAPI);
+        const useridcapturado = sessionStorage.getItem("idUser");
+        if (!useridcapturado) {
+          alert("Não possui usuário logado");
+          router.push("/Login");
+          return;
+        }
+        const pastasFromAPI = await getPastaByIdUser(useridcapturado);
+        console.log(pastasFromAPI);
+
+        // Verifique se pastasFromAPI é um array, caso contrário, transforme-o em um
+        const pastasArray = Array.isArray(pastasFromAPI)
+          ? pastasFromAPI
+          : [pastasFromAPI];
+
+        setPastas(pastasArray);
       } catch (error) {
         console.error("Erro ao carregar pastas:", error);
       }
     };
 
     loadPastasFromLocalStorage();
-  }, []);
+  }, [router]);
 
   const saveFormButton = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const useridcapturado = sessionStorage.getItem("idUser");
+    if (!useridcapturado) {
+      alert("Não possui usuário logado");
+      router.push("/Login");
+      return;
+    }
     setPastaError(false);
     const novaPasta: Pasta = {
-      id: "your_generated_id_here", // Gerar um ID adequado ou ajustar conforme sua lógica
+      id: uuidv4(),
+      userid: useridcapturado,
       name: novaPastaNome,
       campanhas: [],
     };
@@ -55,7 +81,7 @@ export default function AddPaste() {
     const selectedPasta = pastas[pastaIndex];
     if (selectedPasta) {
       sessionStorage.setItem("pasta_id", selectedPasta.id);
-      router.push("/RelacaoDeCampanha-Client");
+      router.push("/CLIENTE/RelacaoDeCampanha-Client");
     }
   };
 
@@ -131,7 +157,9 @@ export default function AddPaste() {
                         key={campanhaIndex}
                       >
                         <FaFlagCheckered /> {campanha.name}{" "}
-                        {`${campanha.funis!.length} funis`}
+                        {campanha.funis?.length !== undefined
+                          ? `${campanha.funis.length} funis`
+                          : ""}
                       </li>
                     ))}
                   </ul>

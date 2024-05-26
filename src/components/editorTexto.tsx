@@ -4,12 +4,17 @@ import "react-quill/dist/quill.snow.css"; // Importe o estilo do React Quill, se
 
 interface EditorTextoProps {
   placeholder: string;
+  value: string;
+  setValue: (value: string) => void;
 }
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-export default function EditorTexto({ placeholder }: EditorTextoProps) {
-  const [content, setContent] = useState("");
+export default function EditorTexto({
+  placeholder,
+  value,
+  setValue,
+}: EditorTextoProps) {
   const fontOptions = [
     "Arial",
     "Times New Roman",
@@ -52,8 +57,8 @@ export default function EditorTexto({ placeholder }: EditorTextoProps) {
     <>
       <ReactQuill
         id="myQuillEditor"
-        value={content}
-        onChange={(value) => setContent(value)}
+        value={value}
+        onChange={(value) => setValue(value)}
         placeholder={placeholder || "Start typing..."}
         modules={modules}
         formats={formats}

@@ -3,71 +3,80 @@ import { TagsType } from "@/types/TagsType";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import { FaRegFloppyDisk, FaRotate, FaTags, FaXmark } from "react-icons/fa6";
+import {
+  addTag,
+  updateTag,
+  getAllTags,
+  deleteTag,
+} from "@/services/TagsService";
 
 export default function CadastroDeTags_Client() {
   const [newTag, setNewTag] = useState("");
   const [tags, setTags] = useState<TagsType[]>([]);
   const router = useRouter();
-  const [tagsId, setTagsId] = useState<number | null>(null);
+  const [tagsId, setTagsId] = useState<string | null>(null);
+
   useEffect(() => {
-    const loadTags = () => {
-      const storedTags = localStorage.getItem("tags");
-      if (storedTags) {
-        setTags(JSON.parse(storedTags));
+    const fetchTags = async () => {
+      try {
+        const tagsData = await getAllTags();
+        setTags(tagsData);
+      } catch (error) {
+        console.error("Erro ao obter as tags:", error);
       }
     };
 
-    loadTags();
+    fetchTags();
   }, []);
 
   const cancel = () => {
-    router.back();
+    router.push("/CLIENTE/CadastroDeTags-Client");
   };
 
   useEffect(() => {
-    const storedTags = localStorage.getItem("tags");
-    if (storedTags) {
-      const parsedTags = JSON.parse(storedTags);
-      setTags(parsedTags);
-
-      const { id } = router.query;
-
-      if (id) {
-        setTagsId(parseInt(id as string, 10));
-        const tagsEdit = parsedTags.find(
-          (t: TagsType) => t.id === parseInt(id as string, 10)
-        );
-
-        if (tagsEdit) {
-          setNewTag(tagsEdit.name);
-        }
+    const { id } = router.query;
+    if (id) {
+      setTagsId(id as string);
+      const tagEdit = tags.find((tag) => tag.id === id);
+      if (tagEdit) {
+        setNewTag(tagEdit.name);
       }
     }
-  }, [router.query]);
+  }, [router.query, tags]);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (newTag.trim() === "") {
       return;
     }
 
-    const tagObject: TagsType = {
-      id: tagsId || Date.now(),
-      name: newTag,
-    };
-
-    const updatedTags = tagsId
-      ? tags.map((tag) => (tag.id === tagObject.id ? tagObject : tag))
-      : [...tags, tagObject];
-
-    setTags(updatedTags);
-    localStorage.setItem("tags", JSON.stringify(updatedTags));
-    setNewTag("");
-    setTagsId(null);
-
-    router.back();
+    try {
+      if (tagsId) {
+        await updateTag(tagsId, newTag);
+      } else {
+        await addTag(newTag);
+      }
+      const updatedTags = await getAllTags();
+      setTags(updatedTags);
+      setNewTag("");
+      setTagsId(null);
+      router.push("/CLIENTE/CadastroDeTags-Client");
+    } catch (error) {
+      console.error("Erro ao salvar a tag:", error);
+    }
   };
+
+  const handleDelete = async (tagId: string) => {
+    try {
+      await deleteTag(tagId);
+      const updatedTags = await getAllTags();
+      setTags(updatedTags);
+    } catch (error) {
+      console.error("Erro ao excluir a tag:", error);
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -150,6 +159,27 @@ export default function CadastroDeTags_Client() {
             </button>
           </div>
         </form>
+
+        {/* Lista de tags */}
+        <div className="mt-5 rounded-lg  ">
+          <h2 className="font-semibold mb-4">Lista de Tags</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {tags.map((tag) => (
+              <div
+                key={tag.id}
+                className="bg-slate-200 rounded-lg shadow-md p-4 flex justify-between hover:shadow-lg transition-shadow duration-300 ease-in-out"
+              >
+                <span className="text-slate-900">{tag.name}</span>
+                <button
+                  onClick={() => handleDelete(tag.id)}
+                  className="text-red-500 hover:text-red-700 transition-colors duration-150 ease-in-out"
+                >
+                  <FaXmark className="h-5 w-5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     </>
   );

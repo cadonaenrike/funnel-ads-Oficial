@@ -169,12 +169,21 @@ export default function RelacaoDeLeads_Client() {
     const leadEdit = leads.find((lead) => lead.id === leadId);
 
     if (leadEdit) {
-      router.push({ pathname: "/CadastroDeLeads-Client", query: { leadId } });
+      router.push({
+        pathname: "/CLIENTE/CadastroDeLeads-Client",
+        query: {
+          leadId,
+          nome: leadEdit.nome,
+          celular: leadEdit.celular || "",
+          email: leadEdit.email,
+          tags: leadEdit.tag.map((tag) => tag.name),
+        },
+      });
     }
   };
 
   const handleNewLeads = () => {
-    router.push("/CadastroDeLeads-Client");
+    router.push("/CLIENTE/CadastroDeLeads-Client");
   };
   const handleDelLeads = async (id: string) => {
     try {

@@ -6,33 +6,59 @@ import { Campanha } from "@/types/PasteTypes";
 import {
   deleteCampanha,
   getCampanhas,
+  getCampanhasById,
+  getCampanhasIdUser,
   updateCampanha,
 } from "@/services/CampanhaService";
+import { useRouter } from "next/router";
+import { getFunis } from "@/services/FunisService";
 
 export default function AddCampanha() {
   const [nomeCampanha, setNomeCampanha] = useState("");
   const [campanhas, setCampanhas] = useState<Campanha[]>([]);
   const [editCampanhaId, setEditCampanhaId] = useState<string | null>(null);
+  const [funis, setFunis] = useState<any>()
+  const router = useRouter();
 
   useEffect(() => {
+    const useridcapturado = sessionStorage.getItem("idUser");
+    if (!useridcapturado) {
+      alert("Não possui usuário logado");
+      router.push("/Login");
+      return;
+    }
     const fetchCampanhas = async () => {
-      const fetchedCampanhas = await getCampanhas();
+      const fetchedCampanhas = await getCampanhasIdUser(useridcapturado);
       setCampanhas(fetchedCampanhas);
     };
 
+    const fetchFunis = async () => {
+      const fetchedCampanhas = await getFunis(useridcapturado);
+      setFunis(fetchedCampanhas);
+    };
+
+   
     fetchCampanhas();
   }, []);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const useridcapturado = sessionStorage.getItem("idUser");
+    if (!useridcapturado) {
+      alert("Não possui usuário logado");
+      router.push("/Login");
+      return;
+    }
     // Atualiza a campanha existente
     if (editCampanhaId) {
-      await updateCampanha(editCampanhaId, { name: nomeCampanha });
+      await updateCampanha(editCampanhaId, {
+        name: nomeCampanha,
+        userid: useridcapturado,
+      });
 
       setNomeCampanha("");
       setEditCampanhaId(null);
-      const fetchedCampanhas = await getCampanhas();
+      const fetchedCampanhas = await getCampanhasIdUser(useridcapturado);
       setCampanhas(fetchedCampanhas);
     }
   };
@@ -123,6 +149,10 @@ export default function AddCampanha() {
               ))}
             </tbody>
           </table>
+        </div>
+        <h1 className="font-semibold text-2xl ml-2 mt-5">Funis:</h1>
+        <div>
+
         </div>
       </section>
     </>

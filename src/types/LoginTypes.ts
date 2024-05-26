@@ -11,6 +11,9 @@ export interface LoginResponse {
       id: number;
       nome: string;
       email: string;
+      dfatores?: boolean;
+      isadmin: string;
     };
   };
+  error?: string;
 }

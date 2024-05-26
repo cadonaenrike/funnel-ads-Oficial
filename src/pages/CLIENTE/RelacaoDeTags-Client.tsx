@@ -1,43 +1,34 @@
 import { useEffect, useState } from "react";
 import NavBar from "@/components/navBar";
 import { useRouter } from "next/router";
-import {
-  FaCirclePlus,
-  FaRegPenToSquare,
-  FaRegTrashCan,
-  FaTags,
-} from "react-icons/fa6";
+import { FaCirclePlus, FaRegPenToSquare, FaTags } from "react-icons/fa6";
+import { getAllTags, deleteTag } from "@/services/TagsService";
 import { TagsType } from "@/types/TagsType";
-
-interface Tag {
-  id: string;
-  name: string;
-}
+import { FaRegTrashAlt } from "react-icons/fa";
 
 export default function RelacaoDeLeads_Client() {
   const router = useRouter();
-
   const [tags, setTags] = useState<TagsType[]>([]);
-  const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
+  const [filteredTags, setFilteredTags] = useState<TagsType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleNewTag = () => {
-    router.push("/CadastroDeTags-Client");
-  };
-
   useEffect(() => {
-    const storedTags = localStorage.getItem("tags");
+    const fetchTags = async () => {
+      try {
+        const allTags = await getAllTags();
+        setTags(allTags);
+        setFilteredTags(allTags);
+      } catch (error) {
+        console.error("Erro ao obter as tags:", error);
+      }
+    };
 
-    if (storedTags) {
-      const parsedTags: Tag[] = JSON.parse(storedTags);
-      setTags(parsedTags);
-      setFilteredTags(parsedTags);
-    }
+    fetchTags();
   }, []);
 
   useEffect(() => {
     const filtered = tags
-      .filter((tag): tag is Tag => !!tag)
+      .filter((tag): tag is TagsType => !!tag)
       .filter((tag) =>
         tag.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -45,32 +36,23 @@ export default function RelacaoDeLeads_Client() {
     setFilteredTags(filtered);
   }, [searchTerm, tags]);
 
-  const handleDelTags = (id: string) => {
-    const storedTags = localStorage.getItem("tags");
+  const handleNewTag = () => {
+    router.push("/CLIENTE/CadastroDeTags-Client");
+  };
 
-    if (storedTags) {
-      const parsedTags: TagsType[] = JSON.parse(storedTags);
-
-      const tagsIndex = parsedTags.findIndex((tags) => tags.id === id);
-
-      if (tagsIndex !== -1) {
-        const updatedTags = [
-          ...parsedTags.slice(0, tagsIndex),
-          ...parsedTags.slice(tagsIndex + 1),
-        ];
-
-        setTags(updatedTags);
-        localStorage.setItem("tags", JSON.stringify(updatedTags));
-      }
+  const handleDelTags = async (id: string) => {
+    try {
+      await deleteTag(id);
+      const updatedTags = tags.filter((tag) => tag.id !== id);
+      setTags(updatedTags);
+      setFilteredTags(updatedTags);
+    } catch (error) {
+      console.error("Erro ao excluir tag:", error);
     }
   };
 
   const handleEditTags = (id: string) => {
-    const editTags = tags.find((tag) => tag.id === id);
-
-    if (editTags) {
-      router.push({ pathname: "/CadastroDeTags-Client", query: { id } });
-    }
+    router.push({ pathname: "/CLIENTE/CadastroDeTags-Client", query: { id } });
   };
 
   return (
@@ -136,7 +118,7 @@ export default function RelacaoDeLeads_Client() {
                         className="text-xl cursor-pointer"
                         onClick={() => handleEditTags(tag.id)}
                       />
-                      <FaRegTrashCan
+                      <FaRegTrashAlt
                         className="text-xl cursor-pointer"
                         onClick={() => handleDelTags(tag.id)}
                       />

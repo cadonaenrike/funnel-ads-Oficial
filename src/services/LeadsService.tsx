@@ -10,6 +10,7 @@ export const addLead = async (
       nome: lead.nome,
       celular: lead.celular,
       email: lead.email,
+      userid: lead.userid,
       tag: lead.tag.map((t) => t.id),
     });
     return response.data;
@@ -23,6 +24,15 @@ export const addLead = async (
 export const getAllLeads = async (): Promise<LeadsType[]> => {
   try {
     const response = await api.get<LeadsType[]>("/getLeads");
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao obter leads:", error);
+    throw error;
+  }
+};
+export const getLeadUserId = async (idUser: string): Promise<LeadsType[]> => {
+  try {
+    const response = await api.get<LeadsType[]>(`/getLeadsIdUser/${idUser}`);
     return response.data;
   } catch (error) {
     console.error("Erro ao obter leads:", error);

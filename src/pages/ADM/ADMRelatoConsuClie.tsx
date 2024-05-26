@@ -3,10 +3,12 @@ import { FaUsers } from "react-icons/fa6";
 import { Calendar } from "primereact/calendar";
 import { Nullable } from "primereact/ts-helpers";
 import { useState } from "react";
+import useAdminCheck from "@/services/AdmService";
 
 export default function ADMRelatoConsClie() {
   const [date, setDate] = useState<Nullable<Date>>(null);
   const currentDate = new Date().toISOString().split("T")[0];
+  useAdminCheck();
   return (
     <>
       <NavBar />

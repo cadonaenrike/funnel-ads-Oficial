@@ -40,14 +40,14 @@ export default function CardsCampanha({
 
   return (
     <div
-      className={`flex items-center rounded-md bg-white w-96 text-slate-800 flex-col p-5 shadow-lg gap-3 ${poppins.className}`}
+      className={`flex items-center rounded-md bg-white w-96 text-slate-800 flex-col p-4 pb-2 shadow-lg gap-3 ${poppins.className}`}
     >
       <h2 className="text-lg">{title}</h2>
-      <section className="flex gap-10 items-center py-4 ">
+      <section className="flex gap-10 items-center py-3 ">
         <section className="flex flex-col w-full ">
           <div className="bg-white max-w-screen-xl mx-auto p-10 flex-col flex rounded-lg shadow-xl">
             {children ||
-              pastas.map((pasta) => (
+              pastas.slice(-3).map((pasta) => (
                 <div
                   key={pasta.id}
                   className="bg-white w-full border-b-2 mx-auto flex justify-around items-center m-2"
@@ -61,7 +61,7 @@ export default function CardsCampanha({
       </section>
       {showLink && (
         <Link
-          href="/RelacaoDePasta-Client"
+          href="/CLIENTE/RelacaoDePasta-Client"
           className="flex items-center w-full justify-end text-sm"
         >
           Ver todos <FaChevronRight className="text-sm" />

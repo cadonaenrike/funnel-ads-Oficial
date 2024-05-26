@@ -1,5 +1,6 @@
 import { GlobalProvider } from "@/globalContext/userAdmin";
 import "@/styles/globals.css";
+import "@/styles/loader.css";
 import type { AppProps } from "next/app";
 
 function MyApp({ Component, pageProps }: AppProps) {
